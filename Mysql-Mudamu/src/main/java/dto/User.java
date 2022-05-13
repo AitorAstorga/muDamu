@@ -17,7 +17,6 @@ public class User implements Serializable{
 	private String salt;
 	private String username;
 	private String password;
-	private String confirmPassword;
 
 	public User() {
 		super();
@@ -74,14 +73,6 @@ public class User implements Serializable{
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
-
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
 	}
 	
 
