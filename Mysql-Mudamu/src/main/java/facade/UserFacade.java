@@ -40,7 +40,7 @@ public class UserFacade {
     }
 
     public void saveUser(User user) {
-        if (user.getIDPaciente() == 0) {
+        if (user.getpacienteID() == 0) {
         	try {
 				daoItem.create(user);
 			} catch (NotFoundException | SQLException e) {

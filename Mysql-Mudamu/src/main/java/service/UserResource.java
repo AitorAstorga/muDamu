@@ -179,7 +179,7 @@ public class UserResource {
 		Response res;
 		User resource;
 		UserFacade f = new UserFacade();
-		resource = f.load(platform.getIDPaciente());
+		resource = f.load(platform.getpacienteID());
 
 		if (Objects.isNull(resource)) {
 			res = Response.status(Response.Status.NOT_FOUND).build();
@@ -231,9 +231,9 @@ public class UserResource {
 	public Response crear1(@FormParam("id") int id, @FormParam("tarjeta") int tarjeta, @FormParam("username") String username,
 			@FormParam("password") String password) {
 		User user = new User();
-		user.setIDPaciente(id);
+		user.setpacienteID(id);
 		user.setTarjetaSanitaria(tarjeta);
-		user.setUsername(username);
+		user.setUsername(username);	
 		user.setPassword(password);
 		//platform.setname(name);
 

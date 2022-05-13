@@ -44,11 +44,11 @@ public class User implements Serializable{
         this.password = password;
     }
 
-	public Integer getIDPaciente() {
+	public Integer getpacienteID() {
 		return pacienteID;
 	}
 
-	public void setIDPaciente(Integer pacienteID) {
+	public void setpacienteID(Integer pacienteID) {
 		this.pacienteID = pacienteID;
 	}
 

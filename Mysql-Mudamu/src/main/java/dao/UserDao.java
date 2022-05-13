@@ -66,7 +66,7 @@ public class UserDao {
 	public User getObject(int IDpaciente) {
 		Connection conn = mysqlConfig.connect();
 		User valueObject = createValueObject();
-		valueObject.setIDPaciente(IDpaciente);
+		valueObject.setpacienteID(IDpaciente);
 		load(valueObject);
 		return valueObject;
 	}
@@ -100,7 +100,7 @@ public class UserDao {
 
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, valueObject.getIDPaciente());
+			stmt.setInt(1, valueObject.getpacienteID());
 
 			singleQuery(conn, stmt, valueObject);
 		} catch (SQLException e) {
@@ -227,7 +227,7 @@ public class UserDao {
 			stmt.setString(4, valueObject.getUsername());
 			stmt.setString(5, valueObject.getPassword());
 
-			stmt.setInt(9, valueObject.getIDPaciente());
+			stmt.setInt(9, valueObject.getpacienteID());
 
 			int rowcount = databaseUpdate(conn, stmt);
 			if (rowcount == 0) {
@@ -351,11 +351,11 @@ public class UserDao {
 		boolean first = true;
 		StringBuffer sql = new StringBuffer("SELECT * FROM user WHERE 1=1 ");
 
-		if (valueObject.getIDPaciente() != 0) {
+		if (valueObject.getpacienteID() != 0) {
 			if (first) {
 				first = false;
 			}
-			sql.append("AND pacienteID = ").append(valueObject.getIDPaciente()).append(" ");
+			sql.append("AND pacienteID = ").append(valueObject.getpacienteID()).append(" ");
 		}
 		
 		if (valueObject.getTarjetaSanitaria() != 0) {
@@ -443,7 +443,7 @@ public class UserDao {
 
 			if (result.next()) {
 
-				valueObject.setIDPaciente(result.getInt("pacienteID"));
+				valueObject.setpacienteID(result.getInt("pacienteID"));
 				valueObject.setTarjetaSanitaria(result.getInt("tarjetaSanitaria"));
 				valueObject.setSalt(result.getString("salt"));
 				valueObject.setUsername(result.getString("username"));
@@ -481,7 +481,7 @@ public class UserDao {
 			while (result.next()) {
 				User temp = createValueObject();
 
-				temp.setIDPaciente(result.getInt("pacienteID"));
+				temp.setpacienteID(result.getInt("pacienteID"));
 				temp.setSalt(result.getString("salt"));
 				temp.setUsername(result.getString("username"));
 				temp.setPassword(result.getString("password"));
