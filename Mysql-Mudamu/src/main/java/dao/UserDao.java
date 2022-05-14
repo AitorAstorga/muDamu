@@ -181,16 +181,15 @@ public class UserDao {
 		ResultSet result = null;
 
 		try {
-			sql = "INSERT INTO pacientes ( tarjetaSanitaria, " + "salt, username, password) VALUES (?, ?, ?, ?) ";
+			sql = "INSERT INTO pacientes (salt, username, password) VALUES (?, ?, ?, ?) ";
 
 			stmt = conn.prepareStatement(sql);
 
-			//stmt.setInt(1, valueObject.getTarjetaSanitaria());
 			String salt = new String("salt");
-			stmt.setString(3, salt);
-			stmt.setString(4, valueObject.getUsername());
+			stmt.setString(1, salt);
+			stmt.setString(2, valueObject.getUsername());
 			String psw = valueObject.getPassword();
-			stmt.setString(5, psw);
+			stmt.setString(3, psw);
 
 			int rowcount = databaseUpdate(conn, stmt);
 			if (rowcount != 1) {

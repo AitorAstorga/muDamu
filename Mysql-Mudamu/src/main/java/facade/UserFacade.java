@@ -13,59 +13,47 @@ import dto.User;
 public class UserFacade {
 	UserDao daoItem;
 
-    public UserFacade() {
-    	daoItem = new UserDao();
-    }
+	public UserFacade() {
+		daoItem = new UserDao();
+	}
 
-    public void insertItem(User user) {
-    	daoItem.load(user);
-    }
+	public void insertItem(User user) {
+		daoItem.load(user);
+	}
 
-    public User load(int id) {
-        return daoItem.getObject(id);
-    }
+	public User load(int id) {
+		return daoItem.getObject(id);
+	}
 
-    public User load(String username) {
-    	return daoItem.getObject(username);
-    }
-    
-    public List loadAllItems() {
-        try {
+	public User load(String username) {
+		return daoItem.getObject(username);
+	}
+
+	public List loadAllItems() {
+		try {
 			return daoItem.loadAll();
 		} catch (SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
-            l.log(Level.SEVERE, "context", e);
+			l.log(Level.SEVERE, "context", e);
 		}
 		return null;
-    }
+	}
 
-    public void saveUser(User user) {
-        if (user.getpacienteID() == 0) {
-        	try {
-				daoItem.create(user);
-			} catch (NotFoundException | SQLException e) {
-				Logger l = Logger.getLogger(e.getMessage());
-	            l.log(Level.SEVERE, "context", e);
-			}
-        } else {
-        	try {
-				daoItem.save(user);
-			} catch (NotFoundException e) {
-				Logger l = Logger.getLogger(e.getMessage());
-	            l.log(Level.SEVERE, "context", e);
-			} catch (SQLException e) {
-				Logger l = Logger.getLogger(e.getMessage());
-	            l.log(Level.SEVERE, "context", e);
-			}
-        }
-    }
+	public void saveUser(User user) {
+		try {
+			daoItem.create(user);
+		} catch (NotFoundException | SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+		}
+	}
 
-    public void deleteCdItem(Integer id) {
-         try {
+	public void deleteCdItem(Integer id) {
+		try {
 			daoItem.delete(id);
 		} catch (NotFoundException | SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
-            l.log(Level.SEVERE, "context", e);
+			l.log(Level.SEVERE, "context", e);
 		}
-    }
+	}
 }
