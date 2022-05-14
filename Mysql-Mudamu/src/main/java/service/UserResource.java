@@ -217,7 +217,7 @@ public class UserResource {
 			@FormParam("password") String password) {
 		User user = new User();
 		user.setpacienteID(id);
-		user.setTarjetaSanitaria(tarjeta);
+		//user.setTarjetaSanitaria(tarjeta);
 		user.setUsername(username);	
 		user.setPassword(password);
 		//platform.setname(name);

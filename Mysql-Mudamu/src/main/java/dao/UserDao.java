@@ -185,7 +185,7 @@ public class UserDao {
 
 			stmt = conn.prepareStatement(sql);
 
-			stmt.setInt(1, valueObject.getTarjetaSanitaria());
+			//stmt.setInt(1, valueObject.getTarjetaSanitaria());
 			String salt = new String("salt");
 			stmt.setString(3, salt);
 			stmt.setString(4, valueObject.getUsername());
@@ -222,7 +222,7 @@ public class UserDao {
 		PreparedStatement stmt = null;
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, valueObject.getTarjetaSanitaria());
+			//stmt.setInt(1, valueObject.getTarjetaSanitaria());
 			stmt.setString(3, "abcd");
 			stmt.setString(4, valueObject.getUsername());
 			stmt.setString(5, valueObject.getPassword());
@@ -358,12 +358,12 @@ public class UserDao {
 			sql.append("AND pacienteID = ").append(valueObject.getpacienteID()).append(" ");
 		}
 		
-		if (valueObject.getTarjetaSanitaria() != 0) {
+		/*if (valueObject.getTarjetaSanitaria() != 0) {
 			if (first) {
 				first = false;
 			}
 			sql.append("AND tarjetaSanitaria = ").append(valueObject.getTarjetaSanitaria()).append(" ");
-		}
+		}*/
 
 		if (valueObject.getSalt() != null) {
 			if (first) {
@@ -444,7 +444,7 @@ public class UserDao {
 			if (result.next()) {
 
 				valueObject.setpacienteID(result.getInt("pacienteID"));
-				valueObject.setTarjetaSanitaria(result.getInt("tarjetaSanitaria"));
+				//valueObject.setTarjetaSanitaria(result.getInt("tarjetaSanitaria"));
 				valueObject.setSalt(result.getString("salt"));
 				valueObject.setUsername(result.getString("username"));
 				valueObject.setPassword(result.getString("password"));

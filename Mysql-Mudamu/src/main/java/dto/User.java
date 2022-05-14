@@ -7,13 +7,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 @XmlRootElement
-@XmlType(propOrder = {"pacienteID", "tarjetaSanitaria", "salt", "username", "password"})
+@XmlType(propOrder = {"pacienteID", "salt", "username", "password"})
 public class User implements Serializable{
 	private static final long serialVersionUID = 1671417246199538663L;
 
 	
 	private Integer pacienteID;
-	private Integer tarjetaSanitaria;
 	private String salt;
 	private String username;
 	private String password;
@@ -35,7 +34,7 @@ public class User implements Serializable{
 		this.pacienteID = pacienteID;
 	}
 
-	public User(int pacienteID,Integer tarjetaSanitaria,String salt,String username,String password)
+	public User(int pacienteID,String salt,String username,String password)
     {
         this.pacienteID = pacienteID;
         this.salt = salt;
@@ -51,14 +50,6 @@ public class User implements Serializable{
 		this.pacienteID = pacienteID;
 	}
 
-	public Integer getTarjetaSanitaria(){
-		return tarjetaSanitaria;
-	}
-
-	public void setTarjetaSanitaria(Integer tarjetaSanitaria) {
-		this.tarjetaSanitaria = tarjetaSanitaria;
-	}
-	
 	public String getUsername() {
 		return username;
 	}
@@ -78,7 +69,7 @@ public class User implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Id: "+pacienteID+" tarjeta: "+tarjetaSanitaria+" salt: "+salt+" username: "+username+" password: "+password;
+		return "Id: "+pacienteID+" salt: "+salt+" username: "+username+" password: "+password;
 	}
 
 	@Override
@@ -86,7 +77,6 @@ public class User implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((pacienteID == null) ? 0 : pacienteID.hashCode());
-		result = prime * result + ((tarjetaSanitaria == null) ? 0 : tarjetaSanitaria.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		result = prime * result + ((salt == null) ? 0 : salt.hashCode());	
@@ -103,11 +93,6 @@ public class User implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (tarjetaSanitaria == null) {
-			if (other.tarjetaSanitaria != null)
-				return false;
-		} else if (!tarjetaSanitaria.equals(other.tarjetaSanitaria))
-			return false;
 		if (pacienteID == null) {
 			if (other.pacienteID != null)
 				return false;
