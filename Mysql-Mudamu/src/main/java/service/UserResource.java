@@ -57,22 +57,7 @@ public class UserResource {
 	 * lista=ListaUsers.instance.mostrar(); return lista; }
 	 */
 	
-	@GET
-	@Path("mostrar")
-	@Produces("application/xml")
-	public Response getXml() {
-		UserFacade f = new UserFacade();
-		List<User> lista = f.loadAllItems();
-		// Al responder utilizando un objeto Response necesitamos utilizar GenericEntity
-		// para que el parseo XML no de error
-		GenericEntity<List<User>> entity = new GenericEntity<List<User>>(lista) {
-		};
-		if (lista.isEmpty()) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		} else {
-			return Response.ok().entity(entity).build();
-		}
-	}
+	
 
 	/**
 	 * Retrieves representation of an instance of DTO.platformResource

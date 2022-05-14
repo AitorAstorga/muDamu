@@ -1,6 +1,5 @@
-service\UserResource.class
 dto\User.class
 facade\UserFacade.class
 dao\UserDao.class
-service\UserResource$1.class
+service\UserResource.class
 config\MySQLConfig.class
