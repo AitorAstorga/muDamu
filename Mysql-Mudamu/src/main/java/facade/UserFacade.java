@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import com.sun.jersey.api.NotFoundException;
 
 import dao.UserDao;
+import dto.Medico;
 import dto.User;
 
 public class UserFacade {
@@ -27,6 +28,10 @@ public class UserFacade {
 
 	public User load(String username) {
 		return daoItem.getObject(username);
+	}
+	
+	public Medico loadMedico(String username) {
+		return daoItem.getObjectMedico(username);
 	}
 
 	public List loadAllItems() {

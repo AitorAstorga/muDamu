@@ -20,7 +20,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import facade.PredFacade;
 import facade.UserFacade;
+import dto.Medico;
+import dto.Prediccion;
 import dto.User;
 
 /**
@@ -110,6 +113,27 @@ public class UserResource {
 		}
 	}
 	
+	
+	@GET
+	@Path("medicoLogin")
+	@Produces("application/xml , application/json")
+	public Response getMedicoXml(@QueryParam("username") String username) {
+		Response res;
+		Medico user = new Medico();
+		Medico copy = new Medico();
+		
+		user.setUsername(username);
+		UserFacade f = new UserFacade();
+		copy = f.loadMedico(username);
+		if (copy==null) {
+			res = Response.status(Response.Status.NOT_FOUND).build();
+			return res;
+			
+		} else {
+			res = Response.ok().entity(copy).build();
+			return res;
+		}
+	}
 	
 	
 	

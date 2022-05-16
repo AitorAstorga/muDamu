@@ -1,10 +1,14 @@
 package dao;
 
+import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +16,8 @@ import java.util.logging.Logger;
 import com.sun.jersey.api.NotFoundException;
 
 import config.MySQLConfig;
+import dto.Medico;
+import dto.Prediccion;
 import dto.User;
 
 /**
@@ -52,6 +58,11 @@ public class UserDao {
 	 * this method can be overrided to return extended valueObject. NOTE: If you
 	 * extend the valueObject class, make sure to override the clone() method in it!
 	 */
+	
+	public Medico createValueObjectMedico() {
+		return new Medico();
+	}
+
 	public User createValueObject() {
 		return new User();
 	}
@@ -77,6 +88,15 @@ public class UserDao {
 		User valueObject = createValueObject();
 		valueObject.setTarjetaSanitaria(username);
 		login(valueObject);
+		return valueObject;
+	}
+	
+	public Medico getObjectMedico(String username) {
+
+		Connection conn = mysqlConfig.connect();
+		Medico valueObject = createValueObjectMedico();
+		valueObject.setUsername(username);
+		medicoLogin(valueObject);
 		return valueObject;
 	}
 
@@ -128,6 +148,31 @@ public class UserDao {
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, valueObject.getTarjetaSanitaria());
 			singleQuery(conn, stmt, valueObject);
+		} catch (SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+
+		} finally {
+			if (stmt != null)
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					Logger l = Logger.getLogger(e.getMessage());
+					l.log(Level.SEVERE, "context", e);
+				}
+		}
+	}
+
+	public void medicoLogin(Medico valueObject) {
+		Connection conn = mysqlConfig.connect();
+		String sql = "SELECT * FROM trabajadores WHERE (username = ? ) ";
+
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, valueObject.getUsername());
+			singleQueryMedico(conn, stmt, valueObject);
 		} catch (SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
@@ -204,47 +249,6 @@ public class UserDao {
 	}
 
 	/**
-	 * save-method. This method will save the current state of valueObject to
-	 * database. Save can not be used to create new instances in database, so upper
-	 * layer must make sure that the primary-key is correctly specified. Primary-key
-	 * will indicate which instance is going to be updated in database. If save can
-	 * not find matching row, NotFoundException will be thrown.
-	 *
-	 * @param conn        This method requires working database connection.
-	 * @param valueObject This parameter contains the class instance to be saved.
-	 *                    Primary-key field must be set for this to work properly.
-	 */
-	public void save(User valueObject) throws NotFoundException, SQLException {
-		Connection conn = mysqlConfig.connect();
-		String sql = "UPDATE pacientes SET tarjetaSanitaria = ?, salt = ?, " + "username = ?, password = ?"
-				+ "WHERE (pacienteID = ? ) ";
-		PreparedStatement stmt = null;
-		try {
-			stmt = conn.prepareStatement(sql);
-			//stmt.setInt(1, valueObject.getTarjetaSanitaria());
-			stmt.setString(3, "abcd");
-			stmt.setString(4, valueObject.getTarjetaSanitaria());
-			stmt.setString(5, valueObject.getPassword());
-
-			stmt.setInt(9, valueObject.getpacienteID());
-
-			int rowcount = databaseUpdate(conn, stmt);
-			if (rowcount == 0) {
-				// System.out.println("Object could not be saved! (PrimaryKey not found)");
-				throw new NotFoundException("Object could not be saved! (PrimaryKey not found)");
-			}
-			if (rowcount > 1) {
-				// System.out.println("PrimaryKey Error when updating DB! (Many objects were
-				// affected!)");
-				throw new SQLException("PrimaryKey Error when updating DB! (Many objects were affected!)");
-			}
-		} finally {
-			if (stmt != null)
-				stmt.close();
-		}
-	}
-
-	/**
 	 * delete-method. This method will remove the information from database as
 	 * identified by by primary-key in supplied valueObject. Once valueObject has
 	 * been deleted it can not be restored by calling save. Restoring can only be
@@ -260,6 +264,31 @@ public class UserDao {
 	public void delete(Integer id) throws NotFoundException, SQLException {
 		Connection conn = mysqlConfig.connect();
 		String sql = "DELETE FROM pacientes WHERE (pacienteID = ? ) ";
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+
+			int rowcount = databaseUpdate(conn, stmt);
+			if (rowcount == 0) {
+				// System.out.println("Object could not be deleted (PrimaryKey not found)");
+				throw new NotFoundException("Object could not be deleted! (PrimaryKey not found)");
+			}
+			if (rowcount > 1) {
+				// System.out.println("PrimaryKey Error when updating DB! (Many objects were
+				// deleted!)");
+				throw new SQLException("PrimaryKey Error when updating DB! (Many objects were deleted!)");
+			}
+		} finally {
+			if (stmt != null)
+				stmt.close();
+		}
+	}
+
+	public void medicoDelete(Integer id) throws NotFoundException, SQLException {
+		Connection conn = mysqlConfig.connect();
+		String sql = "DELETE FROM trabajadores WHERE (trabajadorID = ? ) ";
 		PreparedStatement stmt = null;
 
 		try {
@@ -356,7 +385,7 @@ public class UserDao {
 			}
 			sql.append("AND pacienteID = ").append(valueObject.getpacienteID()).append(" ");
 		}
-		
+
 		if (valueObject.getTarjetaSanitaria() != null) {
 			if (first) {
 				first = false;
@@ -436,7 +465,7 @@ public class UserDao {
 			if (result.next()) {
 
 				valueObject.setpacienteID(result.getInt("pacienteID"));
-				//valueObject.setTarjetaSanitaria(result.getInt("tarjetaSanitaria"));
+				// valueObject.setTarjetaSanitaria(result.getInt("tarjetaSanitaria"));
 				valueObject.setSalt(result.getString("salt"));
 				valueObject.setTarjetaSanitaria(result.getString("tarjetaSanitaria"));
 				valueObject.setPassword(result.getString("password"));
@@ -452,7 +481,39 @@ public class UserDao {
 				stmt.close();
 		}
 	}
+	
+	protected void singleQueryMedico(Connection conn, PreparedStatement stmt, Medico valueObject)
+			throws NotFoundException, SQLException {
 
+		ResultSet result = null;
+
+		try {
+			result = stmt.executeQuery();
+
+			if (result.next()) {
+				valueObject.setSalt(result.getString("salt"));
+				valueObject.setUsername(result.getString("username"));
+				valueObject.setPassword(result.getString("password"));
+				valueObject.setNombre(result.getString("nombre"));
+				valueObject.setApellido1(result.getString("apellido1"));
+				valueObject.setApellido2(result.getString("apellido2"));
+				valueObject.setTelefono(result.getString("telefono"));
+				valueObject.setEmail(result.getString("email"));
+				valueObject.setTipo(result.getString("tipo"));
+
+			} else {
+				// System.out.println("User Object Not Found!");
+				throw new NotFoundException("Medico Object Not Found!");
+			}
+		} finally {
+			if (result != null)
+				result.close();
+			if (stmt != null)
+				stmt.close();
+		}
+	}
+
+	
 	/**
 	 * databaseQuery-method. This method is a helper method for internal use. It
 	 * will execute all database queries that will return multiple rows. The

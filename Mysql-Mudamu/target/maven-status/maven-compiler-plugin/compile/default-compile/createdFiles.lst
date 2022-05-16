@@ -1,5 +1,10 @@
+service\UserResource.class
+dao\PredDao.class
 dto\User.class
 facade\UserFacade.class
+dto\Prediccion.class
 dao\UserDao.class
-service\UserResource.class
+service\PredResource.class
+facade\PredFacade.class
 config\MySQLConfig.class
+dto\Medico.class
