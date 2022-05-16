@@ -7,14 +7,14 @@ import javax.xml.bind.annotation.XmlType;
 
 
 @XmlRootElement
-@XmlType(propOrder = {"pacienteID", "salt", "username", "password"})
+@XmlType(propOrder = {"pacienteID", "salt", "tarjetaSanitaria", "password"})
 public class User implements Serializable{
 	private static final long serialVersionUID = 1671417246199538663L;
 
 	
 	private Integer pacienteID;
 	private String salt;
-	private String username;
+	private String tarjetaSanitaria;
 	private String password;
 
 	public User() {
@@ -34,11 +34,11 @@ public class User implements Serializable{
 		this.pacienteID = pacienteID;
 	}
 
-	public User(int pacienteID,String salt,String username,String password)
+	public User(int pacienteID,String salt,String tarjetaSanitaria,String password)
     {
         this.pacienteID = pacienteID;
         this.salt = salt;
-        this.username = username;
+        this.tarjetaSanitaria = tarjetaSanitaria;
         this.password = password;
     }
 
@@ -50,12 +50,12 @@ public class User implements Serializable{
 		this.pacienteID = pacienteID;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getTarjetaSanitaria() {
+		return tarjetaSanitaria;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setTarjetaSanitaria(String tarjetaSanitaria) {
+		this.tarjetaSanitaria = tarjetaSanitaria;
 	}
 
 	public String getPassword() {
@@ -69,7 +69,7 @@ public class User implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Id: "+pacienteID+" salt: "+salt+" username: "+username+" password: "+password;
+		return "Id: "+pacienteID+" salt: "+salt+" tarjetaSanitaria: "+tarjetaSanitaria+" password: "+password;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class User implements Serializable{
 		int result = 1;
 		result = prime * result + ((pacienteID == null) ? 0 : pacienteID.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((tarjetaSanitaria == null) ? 0 : tarjetaSanitaria.hashCode());
 		result = prime * result + ((salt == null) ? 0 : salt.hashCode());	
 
 		return result;
@@ -103,10 +103,10 @@ public class User implements Serializable{
 				return false;
 		} else if (!password.equals(other.password))
 			return false;
-		if (username == null) {
-			if (other.username != null)
+		if (tarjetaSanitaria == null) {
+			if (other.tarjetaSanitaria != null)
 				return false;
-		} else if (!username.equals(other.username))
+		} else if (!tarjetaSanitaria.equals(other.tarjetaSanitaria))
 			return false;
 		return true;
 	}

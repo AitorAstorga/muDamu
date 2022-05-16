@@ -88,7 +88,7 @@ public class UserResource {
 		User copy = new User();
 
 		
-		user.setUsername(username);
+		user.setTarjetaSanitaria(username);
 		UserFacade f = new UserFacade();
 		copy = f.load(username);
 		if (copy==null) {
@@ -218,7 +218,7 @@ public class UserResource {
 		User user = new User();
 		user.setpacienteID(id);
 		//user.setTarjetaSanitaria(tarjeta);
-		user.setUsername(username);	
+		user.setTarjetaSanitaria(username);	
 		user.setPassword(password);
 		//platform.setname(name);
 

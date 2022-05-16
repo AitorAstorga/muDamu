@@ -75,7 +75,7 @@ public class UserDao {
 
 		Connection conn = mysqlConfig.connect();
 		User valueObject = createValueObject();
-		valueObject.setUsername(username);
+		valueObject.setTarjetaSanitaria(username);
 		login(valueObject);
 		return valueObject;
 	}
@@ -120,13 +120,13 @@ public class UserDao {
 
 	public void login(User valueObject) {
 		Connection conn = mysqlConfig.connect();
-		String sql = "SELECT * FROM pacientes WHERE (username = ? ) ";
+		String sql = "SELECT * FROM pacientes WHERE (tarjetaSanitaria = ? ) ";
 
 		PreparedStatement stmt = null;
 
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, valueObject.getUsername());
+			stmt.setString(1, valueObject.getTarjetaSanitaria());
 			singleQuery(conn, stmt, valueObject);
 		} catch (SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
@@ -181,13 +181,13 @@ public class UserDao {
 		ResultSet result = null;
 
 		try {
-			sql = "INSERT INTO pacientes (salt, username, password) VALUES (?, ?, ?, ?) ";
+			sql = "INSERT INTO pacientes (salt, tarjetaSanitaria, password) VALUES (?, ?, ?) ";
 
 			stmt = conn.prepareStatement(sql);
 
 			String salt = new String("salt");
 			stmt.setString(1, salt);
-			stmt.setString(2, valueObject.getUsername());
+			stmt.setString(2, valueObject.getTarjetaSanitaria());
 			String psw = valueObject.getPassword();
 			stmt.setString(3, psw);
 
@@ -223,7 +223,7 @@ public class UserDao {
 			stmt = conn.prepareStatement(sql);
 			//stmt.setInt(1, valueObject.getTarjetaSanitaria());
 			stmt.setString(3, "abcd");
-			stmt.setString(4, valueObject.getUsername());
+			stmt.setString(4, valueObject.getTarjetaSanitaria());
 			stmt.setString(5, valueObject.getPassword());
 
 			stmt.setInt(9, valueObject.getpacienteID());
@@ -357,25 +357,18 @@ public class UserDao {
 			sql.append("AND pacienteID = ").append(valueObject.getpacienteID()).append(" ");
 		}
 		
-		/*if (valueObject.getTarjetaSanitaria() != 0) {
+		if (valueObject.getTarjetaSanitaria() != null) {
 			if (first) {
 				first = false;
 			}
 			sql.append("AND tarjetaSanitaria = ").append(valueObject.getTarjetaSanitaria()).append(" ");
-		}*/
+		}
 
 		if (valueObject.getSalt() != null) {
 			if (first) {
 				first = false;
 			}
 			sql.append("AND salt LIKE '").append(valueObject.getSalt()).append("%' ");
-		}
-
-		if (valueObject.getUsername() != null) {
-			if (first) {
-				first = false;
-			}
-			sql.append("AND username LIKE '").append(valueObject.getUsername()).append("%' ");
 		}
 
 		if (valueObject.getPassword() != null) {
@@ -445,7 +438,7 @@ public class UserDao {
 				valueObject.setpacienteID(result.getInt("pacienteID"));
 				//valueObject.setTarjetaSanitaria(result.getInt("tarjetaSanitaria"));
 				valueObject.setSalt(result.getString("salt"));
-				valueObject.setUsername(result.getString("username"));
+				valueObject.setTarjetaSanitaria(result.getString("tarjetaSanitaria"));
 				valueObject.setPassword(result.getString("password"));
 
 			} else {
@@ -482,7 +475,7 @@ public class UserDao {
 
 				temp.setpacienteID(result.getInt("pacienteID"));
 				temp.setSalt(result.getString("salt"));
-				temp.setUsername(result.getString("username"));
+				temp.setTarjetaSanitaria(result.getString("tarjetaSanitaria"));
 				temp.setPassword(result.getString("password"));
 
 				searchResults.add(temp);
