@@ -40,7 +40,11 @@ public class PredDao {
 	public void loadPred(Prediccion valueObject) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "SELECT * FROM predicciones WHERE (medicoID = ? ) ";
+		String sql = "SELECT predicciones.prediccionID, tarjeta_sanitaria.nombre, tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, predicciones.fecha_hora, categorias.categoriaID, categorias.nombre as nombreCategoria  FROM mudamu.predicciones\n"
+				+ "	JOIN\n"
+				+ "pacientes ON predicciones.pacienteID = pacientes.pacienteID\n"
+				+ "	JOIN tarjeta_sanitaria ON pacientes.tarjetaSanitaria = tarjeta_sanitaria.tarjetaSanitaria\n"
+				+ "	JOIN categorias ON predicciones.categoriaID = categorias.categoriaID WHERE (predicciones.medicoID = ? ) ";
 		PreparedStatement stmt = null;
 
 		try {
@@ -74,9 +78,12 @@ public class PredDao {
 
 			if (result.next()) {
 
-				valueObject.setprediccionID(Integer.parseInt(result.getString("prediccionID")));
-				valueObject.setPacienteID(Integer.parseInt(result.getString("pacienteID")));
+				valueObject.setPrediccionID(Integer.parseInt(result.getString("prediccionID")));
+				valueObject.setNombre(result.getString("nombre"));
+				valueObject.setApellido1(result.getString("apellido1"));
+				valueObject.setApellido2(result.getString("apellido2"));
 				valueObject.setCategoriaID(Integer.parseInt(result.getString("categoriaID")));
+				valueObject.setNombreCategoria(result.getString("nombreCategoria"));
 
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 				Date parsedDate;
@@ -86,14 +93,13 @@ public class PredDao {
 					valueObject.setFecha_hora(timestamp);
 
 				} catch (ParseException | SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
 				valueObject.setMedicoID(Integer.parseInt(result.getString("medicoID")));
 			} else {
 				// System.out.println("User Object Not Found!");
-				throw new NotFoundException("Medico Object Not Found!");
+				throw new NotFoundException("Prediccion Object Not Found!");
 			}
 		} finally {
 			if (result != null)
