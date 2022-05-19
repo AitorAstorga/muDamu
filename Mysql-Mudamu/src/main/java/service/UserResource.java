@@ -70,9 +70,22 @@ public class UserResource {
 	@GET
 	@Path("mostrar")
 	@Produces("application/json")
-	public Response getJson() {
+	public Response getPac() {
 		UserFacade f = new UserFacade();
 		List<User> lista = f.loadAllItems();
+		if (lista.isEmpty()) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		} else {
+			return Response.ok().entity(lista).build();
+		}
+	}
+	
+	@GET
+	@Path("mostrarMedicos")
+	@Produces("application/json")
+	public Response getMedicos() {
+		UserFacade f = new UserFacade();
+		List<User> lista = f.loadAllMedicos();
 		if (lista.isEmpty()) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		} else {
@@ -89,26 +102,15 @@ public class UserResource {
 		Response res;
 		User user = new User();
 		User copy = new User();
-
 		
 		user.setTarjetaSanitaria(username);
 		UserFacade f = new UserFacade();
 		copy = f.load(username);
 		if (copy==null) {
-			
-
-			
 			res = Response.status(Response.Status.NOT_FOUND).build();
-
 			return res;
-			
-			
-			
 		} else {
-
-
 			res = Response.ok().entity(copy).build();
-			
 			return res;
 		}
 	}
@@ -160,7 +162,7 @@ public class UserResource {
 	 * 
 	 * @return an HTTP response with content of the updated or created resource.
 	 */
-	@PUT
+	/*@PUT
 	@Path("put/{id}/{name}")
 	@Consumes("text/plain")
 	public Response putXml(@PathParam("id") int id, @PathParam("name") String name) {
@@ -176,11 +178,11 @@ public class UserResource {
 			f.saveCd(platform);
 			res = Response.ok().build();
 			return res;
-		}*/
+		}
 		return null;
-	}
+	}*/
 
-	@PUT
+	/*@PUT
 	@Path("put/updateplatform")
 	@Consumes("application/json")
 	@Produces("application/json")
@@ -198,29 +200,12 @@ public class UserResource {
 			res = Response.ok(platform).build();
 			return res;
 		}
-	}
-
-	/*
-	 * @PUT
-	 * 
-	 * @Path("put/{id}")
-	 * 
-	 * @Consumes("text/plain") public void crearupdateput(@PathParam("id") int id) {
-	 * int pos=ListaUsers.instance.buscarPos(id); User platform=new User(); if
-	 * (pos==-1){ platform.setId(id);
-	 * platform.setTitle("titulo Nuevo User con PUT");
-	 * platform.setSummary("Breve descripcion nuevo User PUT");
-	 * platform.setDescription("Descripcion del nuevo User PUT");
-	 * ListaUsers.instance.anadir(platform);} else{
-	 * ListaUsers.instance.modificar(pos, "titulo modificado con PUT",
-	 * "Breve modificacion PUT", "Descripcion modificacion PUT"); } }
-	 * 
-	 */
+	}*/
 
 	@DELETE
 	@Path("delete/{id}")
 	@Consumes("text/plain")
-	public Response deleteplatform(@PathParam("id") int id) {
+	public Response deletePaciente(@PathParam("id") int id) {
 		User platform;
 		UserFacade f = new UserFacade();
 		platform = f.load(id);
@@ -228,36 +213,44 @@ public class UserResource {
 			return Response.status(Response.Status.NOT_FOUND).build();
 
 		}
-		f.deleteCdItem(id);
+		f.deletePac(id);
+		return Response.noContent().build();
+
+	}
+	
+	@DELETE
+	@Path("deleteMedico/{username}")
+	@Consumes("text/plain")
+	public Response deleteMedico(@PathParam("username") String username) {
+		Medico platform;
+		UserFacade f = new UserFacade();
+		platform = f.loadMedico(username);
+		if (Objects.isNull(platform)) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+
+		}
+		f.deleteMed(username);
 		return Response.noContent().build();
 
 	}
 
 	@POST
-	@Path("crear1")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	// @Consumes("application/x-www-form-urlencoded")
-	public Response crear1(@FormParam("id") int id, @FormParam("tarjeta") int tarjeta, @FormParam("username") String username,
-			@FormParam("password") String password) {
-		User user = new User();
-		user.setpacienteID(id);
-		//user.setTarjetaSanitaria(tarjeta);
-		user.setTarjetaSanitaria(username);	
-		user.setPassword(password);
-		//platform.setname(name);
-
-		UserFacade f = new UserFacade();
-		f.saveUser(user);
-		return Response.status(Response.Status.CREATED).build();
-	}
-
-	@POST
 	@Path("register")
 	@Consumes("application/xml")
-	public Response crear3(User platform) {
+	public Response crearPaciente(User paciente) {
 		UserFacade uf = new UserFacade();
 		
-		uf.saveUser(platform);
+		uf.saveUser(paciente);
+		return Response.status(Response.Status.CREATED).build();
+	}
+	
+	@POST
+	@Path("registerMedico")
+	@Consumes("application/xml")
+	public Response crearMedico(Medico medico) {
+		UserFacade uf = new UserFacade();
+		
+		uf.saveMedico(medico);
 		return Response.status(Response.Status.CREATED).build();
 	}
 }

@@ -43,6 +43,16 @@ public class UserFacade {
 		}
 		return null;
 	}
+	
+	public List loadAllMedicos() {
+		try {
+			return daoItem.loadAllMedicos();
+		} catch (SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+		}
+		return null;
+	}
 
 	public void saveUser(User user) {
 		try {
@@ -52,10 +62,28 @@ public class UserFacade {
 			l.log(Level.SEVERE, "context", e);
 		}
 	}
+	
+	public void saveMedico(Medico user) {
+		try {
+			daoItem.createMedico(user);
+		} catch (NotFoundException | SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+		}
+	}
 
-	public void deleteCdItem(Integer id) {
+	public void deletePac(Integer id) {
 		try {
 			daoItem.delete(id);
+		} catch (NotFoundException | SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+		}
+	}
+	
+	public void deleteMed(String username) {
+		try {
+			daoItem.medicoDelete(username);
 		} catch (NotFoundException | SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);

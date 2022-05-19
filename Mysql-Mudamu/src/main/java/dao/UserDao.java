@@ -58,7 +58,7 @@ public class UserDao {
 	 * this method can be overrided to return extended valueObject. NOTE: If you
 	 * extend the valueObject class, make sure to override the clone() method in it!
 	 */
-	
+
 	public Medico createValueObjectMedico() {
 		return new Medico();
 	}
@@ -90,7 +90,7 @@ public class UserDao {
 		login(valueObject);
 		return valueObject;
 	}
-	
+
 	public Medico getObjectMedico(String username) {
 
 		Connection conn = mysqlConfig.connect();
@@ -200,7 +200,15 @@ public class UserDao {
 
 		Connection conn = mysqlConfig.connect();
 		String sql = "SELECT * FROM pacientes ORDER BY pacienteID ASC ";
-		List searchResults = listQuery(conn, conn.prepareStatement(sql));
+		List searchResults = listQuery(conn, conn.prepareStatement(sql), true);
+
+		return searchResults;
+	}
+
+	public List loadAllMedicos() throws SQLException {
+		Connection conn = mysqlConfig.connect();
+		String sql = "SELECT * FROM trabajadores ORDER BY trabajadorID ASC ";
+		List searchResults = listQuery(conn, conn.prepareStatement(sql), false);
 
 		return searchResults;
 	}
@@ -247,6 +255,43 @@ public class UserDao {
 		}
 
 	}
+	
+	public synchronized void createMedico(Medico valueObject) throws SQLException {
+		Connection conn = mysqlConfig.connect();
+		String sql = "";
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+
+		try {
+			sql = "INSERT INTO trabajadores (salt, username, password, nombre, apellido1, apellido2, telefono, email, tipo) VALUES "
+					+ "(?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+
+			stmt = conn.prepareStatement(sql);
+
+			String salt = new String("salt");
+			stmt.setString(1, salt);
+			stmt.setString(2, valueObject.getUsername());
+			String psw = valueObject.getPassword();
+			stmt.setString(3, psw);
+			stmt.setString(4, valueObject.getNombre());
+			stmt.setString(5, valueObject.getApellido1());
+			stmt.setString(6, valueObject.getApellido2());
+			stmt.setString(7, valueObject.getTelefono());
+			stmt.setString(8, valueObject.getEmail());
+			stmt.setString(9, valueObject.getTipo());
+
+			int rowcount = databaseUpdate(conn, stmt);
+			if (rowcount != 1) {
+				throw new SQLException("PrimaryKey Error when updating DB!");
+			}
+
+		} finally {
+			if (stmt != null)
+				stmt.close();
+		}
+
+	}
+
 
 	/**
 	 * delete-method. This method will remove the information from database as
@@ -286,14 +331,14 @@ public class UserDao {
 		}
 	}
 
-	public void medicoDelete(Integer id) throws NotFoundException, SQLException {
+	public void medicoDelete(String username) throws NotFoundException, SQLException {
 		Connection conn = mysqlConfig.connect();
-		String sql = "DELETE FROM trabajadores WHERE (trabajadorID = ? ) ";
+		String sql = "DELETE FROM trabajadores WHERE (username = ? ) ";
 		PreparedStatement stmt = null;
 
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, id);
+			stmt.setString(1, username);
 
 			int rowcount = databaseUpdate(conn, stmt);
 			if (rowcount == 0) {
@@ -335,88 +380,6 @@ public class UserDao {
 			if (stmt != null)
 				stmt.close();
 		}
-	}
-
-	/**
-	 * coutAll-method. This method will return the number of all rows from table
-	 * that matches this Dao. The implementation will simply execute "select
-	 * count(primarykey) from table". If table is empty, the return value is 0. This
-	 * method should be used before calling loadAll, to make sure table has not too
-	 * many rows.
-	 *
-	 * @param conn This method requires working database connection.
-	 */
-	/*
-	 * public int countAll() throws SQLException {
-	 * 
-	 * Connection conn = mysqlConfig.connect(); String sql =
-	 * "SELECT count(*) FROM user"; PreparedStatement stmt = null; ResultSet result
-	 * = null; int allRows = 0;
-	 * 
-	 * try { stmt = conn.prepareStatement(sql); result = stmt.executeQuery();
-	 * 
-	 * if (result.next()) allRows = result.getInt(1); } finally { if (result !=
-	 * null) result.close(); if (stmt != null) stmt.close(); } return allRows; }
-	 */
-
-	/**
-	 * searchMatching-Method. This method provides searching capability to get
-	 * matching valueObjects from database. It works by searching all objects that
-	 * match permanent instance variables of given object. Upper layer should use
-	 * this by setting some parameters in valueObject and then call searchMatching.
-	 * The result will be 0-N objects in a List, all matching those criteria you
-	 * specified. Those instance-variables that have NULL values are excluded in
-	 * search-criteria.
-	 *
-	 * @param conn        This method requires working database connection.
-	 * @param valueObject This parameter contains the class instance where search
-	 *                    will be based. Primary-key field should not be set.
-	 */
-	public List searchMatching(User valueObject) throws SQLException {
-		Connection conn = mysqlConfig.connect();
-		List searchResults;
-
-		boolean first = true;
-		StringBuffer sql = new StringBuffer("SELECT * FROM user WHERE 1=1 ");
-
-		if (valueObject.getpacienteID() != 0) {
-			if (first) {
-				first = false;
-			}
-			sql.append("AND pacienteID = ").append(valueObject.getpacienteID()).append(" ");
-		}
-
-		if (valueObject.getTarjetaSanitaria() != null) {
-			if (first) {
-				first = false;
-			}
-			sql.append("AND tarjetaSanitaria = ").append(valueObject.getTarjetaSanitaria()).append(" ");
-		}
-
-		if (valueObject.getSalt() != null) {
-			if (first) {
-				first = false;
-			}
-			sql.append("AND salt LIKE '").append(valueObject.getSalt()).append("%' ");
-		}
-
-		if (valueObject.getPassword() != null) {
-			if (first) {
-				first = false;
-			}
-			sql.append("AND password LIKE '").append(valueObject.getPassword()).append("%' ");
-		}
-
-		sql.append("ORDER BY pacienteID ASC ");
-
-		// Prevent accidential full table results.
-		// Use loadAll if all rows must be returned.
-		if (first)
-			searchResults = new ArrayList();
-		else
-			searchResults = listQuery(conn, conn.prepareStatement(sql.toString()));
-
-		return searchResults;
 	}
 
 	/**
@@ -481,7 +444,7 @@ public class UserDao {
 				stmt.close();
 		}
 	}
-	
+
 	protected void singleQueryMedico(Connection conn, PreparedStatement stmt, Medico valueObject)
 			throws NotFoundException, SQLException {
 
@@ -513,7 +476,6 @@ public class UserDao {
 		}
 	}
 
-	
 	/**
 	 * databaseQuery-method. This method is a helper method for internal use. It
 	 * will execute all database queries that will return multiple rows. The
@@ -523,7 +485,7 @@ public class UserDao {
 	 * @param conn This method requires working database connection.
 	 * @param stmt This parameter contains the SQL statement to be excuted.
 	 */
-	protected List listQuery(Connection conn, PreparedStatement stmt) throws SQLException {
+	protected List listQuery(Connection conn, PreparedStatement stmt, boolean variable) throws SQLException {
 
 		ArrayList searchResults = new ArrayList();
 		ResultSet result = null;
@@ -532,14 +494,29 @@ public class UserDao {
 			result = stmt.executeQuery();
 
 			while (result.next()) {
-				User temp = createValueObject();
+				if (variable) {
+					User temp = createValueObject();
 
-				temp.setpacienteID(result.getInt("pacienteID"));
-				temp.setSalt(result.getString("salt"));
-				temp.setTarjetaSanitaria(result.getString("tarjetaSanitaria"));
-				temp.setPassword(result.getString("password"));
-
-				searchResults.add(temp);
+					temp.setpacienteID(result.getInt("pacienteID"));
+					temp.setSalt(result.getString("salt"));
+					temp.setTarjetaSanitaria(result.getString("tarjetaSanitaria"));
+					temp.setPassword(result.getString("password"));
+					
+					searchResults.add(temp);
+				} else {
+					Medico temp = createValueObjectMedico();
+					temp.setNombre(result.getString("nombre"));
+					temp.setApellido1(result.getString("apellido1"));
+					temp.setApellido2(result.getString("apellido2"));
+					temp.setEmail(result.getString("email"));
+					temp.setPassword(result.getString("password"));
+					temp.setSalt(result.getString("salt"));
+					temp.setTelefono(result.getString("telefono"));
+					temp.setTipo(result.getString("tipo"));
+					temp.setUsername(result.getString("username"));
+					
+					searchResults.add(temp);
+				}
 			}
 
 		} finally {
