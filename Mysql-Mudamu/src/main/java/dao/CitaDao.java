@@ -89,7 +89,7 @@ public class CitaDao {
 				citaMed.setApellido2(result.getString("apellido2"));
 				citaMed.setFecha_hora(result.getString("fecha_hora"));
 				citaMed.setCategoriaID(result.getInt("categoriaID"));
-				citaMed.setNombreCategoria(result.getString("nombre"));
+				citaMed.setNombreCategoria(result.getString("categorias.nombre"));
 
 				valueObject.añadir(citaMed);
 
