@@ -1,8 +1,7 @@
 package facade;
 
 import dao.PredDao;
-import dto.Prediccion;
-import dto.User;
+import dto.Predicciones;
 
 public class PredFacade {
 	
@@ -12,7 +11,7 @@ public class PredFacade {
 		daoItem = new PredDao();
 	}
 	
-	public Prediccion load(Integer medicoID) {
+	public Predicciones load(Integer medicoID) {
 		return daoItem.getObject(medicoID);
 	}
 }

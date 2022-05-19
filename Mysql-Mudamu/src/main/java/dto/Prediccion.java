@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlType(propOrder = { "prediccionID", "nombre", "apellido1", "apellido2", "fecha_hora", "categoriaID",
@@ -16,7 +17,7 @@ public class Prediccion implements Serializable {
 	private String nombre;
 	private String apellido1;
 	private String apellido2;
-	private Timestamp fecha_hora;
+	private String fecha_hora;
 	private Integer categoriaID;
 	private String nombreCategoria;
 	private Integer medicoID;
@@ -30,7 +31,7 @@ public class Prediccion implements Serializable {
 		this.prediccionID = prediccionID;
 	}
 
-	public Prediccion(Integer prediccionID, String nombre, String apellido1, String apellido2, Timestamp fecha_hora,
+	public Prediccion(Integer prediccionID, String nombre, String apellido1, String apellido2, String fecha_hora,
 			Integer categoriaID, String nombreCategoria, Integer medicoID) {
 		super();
 		this.prediccionID = prediccionID;
@@ -75,11 +76,11 @@ public class Prediccion implements Serializable {
 		this.apellido2 = apellido2;
 	}
 
-	public Timestamp getFecha_hora() {
+	public String getFecha_hora() {
 		return fecha_hora;
 	}
 
-	public void setFecha_hora(Timestamp fecha_hora) {
+	public void setFecha_hora(String fecha_hora) {
 		this.fecha_hora = fecha_hora;
 	}
 

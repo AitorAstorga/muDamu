@@ -454,6 +454,7 @@ public class UserDao {
 			result = stmt.executeQuery();
 
 			if (result.next()) {
+				valueObject.setTrabajadorID(result.getInt("trabajadorID"));
 				valueObject.setSalt(result.getString("salt"));
 				valueObject.setUsername(result.getString("username"));
 				valueObject.setPassword(result.getString("password"));

@@ -8,9 +8,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import dto.Enfermedad;
-import dto.Sintoma;
-import dto.SintomaPrediccion;
+import dto.Enfermedades;
+import dto.Sintomas;
+import dto.SintomasPredicciones;
 import facade.EnfermedadFacade;
 import facade.SintomaFacade;
 
@@ -31,16 +31,16 @@ public class EnfermedadSintomasResource {
 	@Produces("application/xml")
 	public Response getEnferXml(@QueryParam("predID") String predID) {
 		Response res;
-		Enfermedad prediccion = new Enfermedad();
+		Enfermedades enfermedades = new Enfermedades();
 		
 		EnfermedadFacade f = new EnfermedadFacade();
-		prediccion = f.load(Integer.parseInt(predID));
-		if (prediccion==null) {
+		enfermedades = f.load(Integer.parseInt(predID));
+		if (enfermedades==null) {
 			res = Response.status(Response.Status.NOT_FOUND).build();
 			return res;
 			
 		} else {
-			res = Response.ok().entity(prediccion).build();
+			res = Response.ok().entity(enfermedades).build();
 			return res;
 		}
 	}
@@ -50,7 +50,7 @@ public class EnfermedadSintomasResource {
 	@Produces("application/xml")
 	public Response getSintXml() {
 		Response res;
-		Sintoma sintomas = new Sintoma();
+		Sintomas sintomas = new Sintomas();
 		
 		SintomaFacade f = new SintomaFacade();
 		sintomas = f.load();
@@ -60,6 +60,7 @@ public class EnfermedadSintomasResource {
 			
 		} else {
 			res = Response.ok().entity(sintomas).build();
+			System.out.println(res);
 			return res;
 		}
 	}
@@ -69,7 +70,7 @@ public class EnfermedadSintomasResource {
 	@Produces("application/xml")
 	public Response getSintPacXml(@QueryParam("predID") String predID) {
 		Response res;
-		SintomaPrediccion prediccion = new SintomaPrediccion();
+		SintomasPredicciones prediccion = new SintomasPredicciones();
 		
 		SintomaFacade f = new SintomaFacade();
 		prediccion = f.loadSintomaPaciente(Integer.parseInt(predID));

@@ -2,6 +2,7 @@ package facade;
 
 import dao.EnfermedadDao;
 import dto.Enfermedad;
+import dto.Enfermedades;
 
 public class EnfermedadFacade {
 	EnfermedadDao daoItem;
@@ -10,7 +11,7 @@ public class EnfermedadFacade {
 		daoItem = new EnfermedadDao();
 	}
 	
-	public Enfermedad load(Integer predID) {
+	public Enfermedades load(Integer predID) {
 		return daoItem.getObject(predID);
 	}
 }

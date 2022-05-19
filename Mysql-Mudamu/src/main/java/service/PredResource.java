@@ -8,7 +8,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import dto.Prediccion;
+import dto.Predicciones;
 import facade.PredFacade;
 
 @Path("pred")
@@ -28,7 +28,7 @@ public class PredResource {
 	@Produces("application/xml")
 	public Response getPredXml(@QueryParam("medicoID") String medicoID) {
 		Response res;
-		Prediccion prediccion = new Prediccion();
+		Predicciones prediccion = new Predicciones();
 		
 		PredFacade f = new PredFacade();
 		prediccion = f.load(Integer.parseInt(medicoID));

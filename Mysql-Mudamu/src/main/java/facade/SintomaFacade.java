@@ -1,8 +1,8 @@
 package facade;
 
 import dao.SintomaDao;
-import dto.Sintoma;
-import dto.SintomaPrediccion;
+import dto.Sintomas;
+import dto.SintomasPredicciones;
 
 public class SintomaFacade {
 	SintomaDao daoItem;
@@ -11,11 +11,11 @@ public class SintomaFacade {
 		daoItem = new SintomaDao();
 	}
 	
-	public Sintoma load() {
+	public Sintomas load() {
 		return daoItem.getObject();
 	}
 	
-	public SintomaPrediccion loadSintomaPaciente(Integer predID) {
+	public SintomasPredicciones loadSintomaPaciente(Integer predID) {
 		return daoItem.getObjectPacienteSintomas(predID);
 	}	
 }

@@ -15,6 +15,7 @@ import com.sun.jersey.api.NotFoundException;
 
 import config.MySQLConfig;
 import dto.Enfermedad;
+import dto.Enfermedades;
 
 
 public class EnfermedadDao {
@@ -24,19 +25,18 @@ public class EnfermedadDao {
 		mysqlConfig = MySQLConfig.getInstance();
 	}
 	
-	public Enfermedad createValueObject() {
-		return new Enfermedad();
+	public Enfermedades createValueObject() {
+		return new Enfermedades();
 	}
 	
-	public Enfermedad getObject(int predID) {
+	public Enfermedades getObject(int predID) {
 		Connection conn = mysqlConfig.connect();
-		Enfermedad valueObject = createValueObject();
-		valueObject.setPrediccionID(predID);
-		loadEnf(valueObject);
+		Enfermedades valueObject = createValueObject();
+		loadEnf(valueObject, predID);
 		return valueObject;
 	}
 	
-	public void loadEnf(Enfermedad valueObject) {
+	public void loadEnf(Enfermedades valueObject, int predId) {
 		Connection conn = mysqlConfig.connect();
 
 		String sql = "SELECT enfermedades_predicciones.enfermedad_preID, enfermedades_predicciones.prediccionID, enfermedades.nombre, categorias.categoriaID, categorias.nombre as categoria, enfermedades_predicciones.probabilidad FROM \r\n"
@@ -46,9 +46,9 @@ public class EnfermedadDao {
 
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, valueObject.getPrediccionID());
+			stmt.setInt(1, predId);
 
-			singleQueryEnf(conn, stmt, valueObject);
+			multipleQueryEnf(conn, stmt, valueObject);
 		} catch (NotFoundException | SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
@@ -65,7 +65,7 @@ public class EnfermedadDao {
 	}
 	
 	
-	protected void singleQueryEnf(Connection conn, PreparedStatement stmt, Enfermedad valueObject)
+	protected void multipleQueryEnf(Connection conn, PreparedStatement stmt, Enfermedades valueObject)
 			throws NotFoundException, SQLException{
 
 		ResultSet result = null;
@@ -73,15 +73,18 @@ public class EnfermedadDao {
 		try {
 			result = stmt.executeQuery();
 
-			if (result.next()) {
-				valueObject.setEnfermedad_preID(result.getInt("enfermedad_preID"));
-				valueObject.setPrediccionID(result.getInt("prediccionID"));
-				valueObject.setNombre(result.getString("nombre"));
-				valueObject.setCategoriaID(result.getInt("categoriaID"));
-				valueObject.setCategoria(result.getString("categoria"));
-				valueObject.setProbabilidad(result.getFloat("probabilidad"));
+			while (result.next()) {
+				Enfermedad enfermedad = new Enfermedad();
+				enfermedad.setEnfermedad_preID(result.getInt("enfermedad_preID"));
+				enfermedad.setPrediccionID(result.getInt("prediccionID"));
+				enfermedad.setNombre(result.getString("nombre"));
+				enfermedad.setCategoriaID(result.getInt("categoriaID"));
+				enfermedad.setCategoria(result.getString("categoria"));
+				enfermedad.setProbabilidad(result.getFloat("probabilidad"));
+				
+				valueObject.añadir(enfermedad);
 
-			} else {
+			} if (result == null) {
 				throw new NotFoundException("Enfermedad Object Not Found!");
 			}
 		} finally {

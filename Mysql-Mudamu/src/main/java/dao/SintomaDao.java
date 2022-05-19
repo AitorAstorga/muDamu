@@ -1,64 +1,63 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import config.MySQLConfig;
-import dto.Prediccion;
 import dto.Sintoma;
-import dto.SintomaPrediccion;
+import dto.Sintomas;
+import dto.SintomasPrediccion;
+import dto.SintomasPredicciones;
 
-
+// "sintomaID", "nombre"
 public class SintomaDao {
+	final static int NUMERO_SINTOMAS = 218; // Provisional: getNumSintomas
+	
 	private MySQLConfig mysqlConfig;
 
 	public SintomaDao() {
 		mysqlConfig = MySQLConfig.getInstance();
 	}
 	
-	public Sintoma createValueObject() {
-		return new Sintoma();
+	public Sintomas createValueObject() {
+		return new Sintomas();
 	}
 	
-	public SintomaPrediccion createValueSintomaPredObject() {
-		return new SintomaPrediccion();
+	public SintomasPredicciones createValueSintomaPredObject() {
+		return new SintomasPredicciones();
 	}
 	
-	public Sintoma getObject() {
+	public Sintomas getObject() {
 		Connection conn = mysqlConfig.connect();
-		Sintoma valueObject = createValueObject();
+		Sintomas valueObject = createValueObject();
 		loadAllSintoms(valueObject);
+
 		return valueObject;
 	}
 	
-	public SintomaPrediccion getObjectPacienteSintomas(int prediccionID) {
+	public SintomasPredicciones getObjectPacienteSintomas(int prediccionID) {
 		Connection conn = mysqlConfig.connect();
-		SintomaPrediccion valueObject = createValueSintomaPredObject();
-		valueObject.setPrediccionID(prediccionID);
-		loadSintomasPac(valueObject);
+		SintomasPredicciones valueObject = createValueSintomaPredObject();
+		loadSintomasPac(valueObject, prediccionID);
 		return valueObject;
 	}
 	
-	public void loadSintomasPac(SintomaPrediccion valueObject) {
+	public void loadSintomasPac(SintomasPredicciones valueObject, int prediccionID) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "SELECT sintomas.sintomaID, sintomas.nombre FROM sintomas \r\n"
-				+ "    JOIN sintomas_prediccion ON sintomas.sintomaID = sintomas_prediccion.sintomaID WHERE prediccionID = ?";
+		String sql = "SELECT sintomas.sintomaID, sintomas.nombre, sintomas_prediccion.prediccionID FROM sintomas \r\n"
+				+ "    JOIN sintomas_prediccion ON sintomas.sintomaID = sintomas_prediccion.sintomaID WHERE sintomas_prediccion.prediccionID = ?";
 		PreparedStatement stmt = null;
 
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, valueObject.getPrediccionID());
+			stmt.setInt(1, prediccionID);
 
-			singleQuerySinPred(conn, stmt, valueObject);
+			multipleQuerySinPred(conn, stmt, valueObject);
 		} catch (Exception e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
@@ -74,7 +73,7 @@ public class SintomaDao {
 		}
 	}
 	
-	public void loadAllSintoms(Sintoma valueObject) {
+	public void loadAllSintoms(Sintomas valueObject) {
 		Connection conn = mysqlConfig.connect();
 
 		String sql = "SELECT * FROM mudamu.sintomas";
@@ -83,7 +82,7 @@ public class SintomaDao {
 		try {
 			stmt = conn.prepareStatement(sql);
 
-			singleQuerySin(conn, stmt, valueObject);
+			multipleQuerySin(conn, stmt, valueObject);
 		} catch (Exception e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
@@ -100,7 +99,7 @@ public class SintomaDao {
 	}
 	
 	
-	protected void singleQuerySin(Connection conn, PreparedStatement stmt, Sintoma valueObject)
+	protected void multipleQuerySin(Connection conn, PreparedStatement stmt, Sintomas valueObject)
 			throws Exception {
 
 		ResultSet result = null;
@@ -108,11 +107,15 @@ public class SintomaDao {
 		try {
 			result = stmt.executeQuery();
 
-			if (result.next()) {
-				valueObject.setSintomaID(result.getInt("sintomaID"));
-				valueObject.setNombre(result.getString("nombre"));
-			} else {
-				throw new Exception("Sintoma Object Not Found!");
+			while (result.next()) {
+				Sintoma sintoma = new Sintoma();
+				
+				sintoma.setSintomaID(result.getInt("sintomaID"));
+				sintoma.setNombre(result.getString("nombre"));
+				
+				valueObject.añadir(sintoma);
+			} if(result == null) {
+				throw new Exception("Sintomas Object Not Found!");
 			}
 		} finally {
 			if (result != null)
@@ -122,7 +125,7 @@ public class SintomaDao {
 		}
 	}
 	
-	protected void singleQuerySinPred(Connection conn, PreparedStatement stmt, SintomaPrediccion valueObject)
+	protected void multipleQuerySinPred(Connection conn, PreparedStatement stmt, SintomasPredicciones valueObject)
 			throws Exception {
 
 		ResultSet result = null;
@@ -130,13 +133,14 @@ public class SintomaDao {
 		try {
 			result = stmt.executeQuery();
 
-			if (result.next()) {
+			while (result.next()) {
+				SintomasPrediccion sintomas = new SintomasPrediccion();
+				sintomas.setSintomaID(result.getInt("sintomaID"));
+				sintomas.setNombre(result.getString("nombre"));
+				sintomas.setPrediccionID(result.getInt("prediccionID"));
 				
-				valueObject.setSintomaID(result.getInt("sintomaID"));
-				valueObject.setNombre(result.getString("nombre"));
-				valueObject.setPrediccionID(result.getInt("prediccionID"));
-				
-			} else {
+				valueObject.añadir(sintomas);
+			} if(result==null) {
 				throw new Exception("Sintoma paciente Object Not Found!");
 			}
 		} finally {

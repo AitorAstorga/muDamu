@@ -4,10 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +11,7 @@ import com.sun.jersey.api.NotFoundException;
 
 import config.MySQLConfig;
 import dto.Prediccion;
-import dto.User;
+import dto.Predicciones;
 
 public class PredDao {
 	
@@ -25,22 +21,21 @@ public class PredDao {
 		mysqlConfig = MySQLConfig.getInstance();
 	}
 	
-	public Prediccion createValueObject() {
-		return new Prediccion();
+	public Predicciones createValueObject() {
+		return new Predicciones();
 	}
 	
-	public Prediccion getObject(int medicoID) {
+	public Predicciones getObject(int medicoID) {
 		Connection conn = mysqlConfig.connect();
-		Prediccion valueObject = createValueObject();
-		valueObject.setMedicoID(medicoID);
-		loadPred(valueObject);
+		Predicciones valueObject = createValueObject();
+		loadPred(valueObject, medicoID);
 		return valueObject;
 	}
 	
-	public void loadPred(Prediccion valueObject) {
+	public void loadPred(Predicciones valueObject, int medicoID) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "SELECT predicciones.prediccionID, tarjeta_sanitaria.nombre, tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, predicciones.fecha_hora, categorias.categoriaID, categorias.nombre as nombreCategoria  FROM mudamu.predicciones\n"
+		String sql = "SELECT predicciones.prediccionID, tarjeta_sanitaria.nombre, tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, predicciones.fecha_hora, categorias.categoriaID, categorias.nombre as nombreCategoria, predicciones.medicoID as medicoID  FROM mudamu.predicciones\n"
 				+ "	JOIN\n"
 				+ "pacientes ON predicciones.pacienteID = pacientes.pacienteID\n"
 				+ "	JOIN tarjeta_sanitaria ON pacientes.tarjetaSanitaria = tarjeta_sanitaria.tarjetaSanitaria\n"
@@ -49,9 +44,9 @@ public class PredDao {
 
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, valueObject.getMedicoID());
+			stmt.setInt(1, medicoID);
 
-			singleQueryPred(conn, stmt, valueObject);
+			multipleQueryPred(conn, stmt, valueObject);
 		} catch (SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
@@ -68,7 +63,7 @@ public class PredDao {
 	}
 	
 	
-	protected void singleQueryPred(Connection conn, PreparedStatement stmt, Prediccion valueObject)
+	protected void multipleQueryPred(Connection conn, PreparedStatement stmt, Predicciones valueObject)
 			throws NotFoundException, SQLException {
 
 		ResultSet result = null;
@@ -76,28 +71,21 @@ public class PredDao {
 		try {
 			result = stmt.executeQuery();
 
-			if (result.next()) {
-
-				valueObject.setPrediccionID(Integer.parseInt(result.getString("prediccionID")));
-				valueObject.setNombre(result.getString("nombre"));
-				valueObject.setApellido1(result.getString("apellido1"));
-				valueObject.setApellido2(result.getString("apellido2"));
-				valueObject.setCategoriaID(Integer.parseInt(result.getString("categoriaID")));
-				valueObject.setNombreCategoria(result.getString("nombreCategoria"));
-
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-				Date parsedDate;
-				try {
-					parsedDate = dateFormat.parse(result.getString("fecha_hora"));
-					Timestamp timestamp = new Timestamp(parsedDate.getTime());
-					valueObject.setFecha_hora(timestamp);
-
-				} catch (ParseException | SQLException e) {
-					e.printStackTrace();
-				}
+			while (result.next()) {
+				Prediccion prediccion = new Prediccion();
 				
-				valueObject.setMedicoID(Integer.parseInt(result.getString("medicoID")));
-			} else {
+				prediccion.setPrediccionID(Integer.parseInt(result.getString("prediccionID")));
+				prediccion.setNombre(result.getString("nombre"));
+				prediccion.setApellido1(result.getString("apellido1"));
+				prediccion.setApellido2(result.getString("apellido2"));
+				prediccion.setCategoriaID(Integer.parseInt(result.getString("categoriaID")));
+				prediccion.setNombreCategoria(result.getString("nombreCategoria"));
+				prediccion.setFecha_hora(result.getString("fecha_hora"));
+				
+				prediccion.setMedicoID(result.getInt("medicoID"));
+				
+				valueObject.añadir(prediccion);
+			} if (result==null) {
 				// System.out.println("User Object Not Found!");
 				throw new NotFoundException("Prediccion Object Not Found!");
 			}
@@ -108,6 +96,4 @@ public class PredDao {
 				stmt.close();
 		}
 	}
-
-
 }
