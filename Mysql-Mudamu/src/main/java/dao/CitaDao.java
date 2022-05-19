@@ -44,7 +44,7 @@ public class CitaDao {
 	public void loadCitaMedicos(CitasMedico valueObject, int citaID) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "select  citas.citaID ,tarjeta_sanitaria.nombre,tarjeta_sanitaria.apellido1 \n"
+		String sql = "select  distinct citas.citaID ,tarjeta_sanitaria.nombre,tarjeta_sanitaria.apellido1 \n"
 				+ ",tarjeta_sanitaria.apellido2  , citas.fecha_hora , categorias.categoriaID, categorias.nombre\n"
 				+ "from citas join trabajadores t1 on t1.trabajadorID  = citas.medicoID\n"
 				+ "            join tarjeta_sanitaria on t1.trabajadorID =tarjeta_sanitaria.medicoID\n"
