@@ -74,7 +74,7 @@ public class PredDao {
 			while (result.next()) {
 				Prediccion prediccion = new Prediccion();
 				
-				prediccion.setPrediccionID(result.getInt("prediccionID"));
+				prediccion.setPrediccionID(Integer.parseInt(result.getString("prediccionID")));
 				prediccion.setNombre(result.getString("nombre"));
 				prediccion.setApellido1(result.getString("apellido1"));
 				prediccion.setApellido2(result.getString("apellido2"));
