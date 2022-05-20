@@ -44,7 +44,7 @@ public class CitaDao {
 	public void loadCitaMedicos(CitasMedico valueObject, int citaID) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "select  citas.citaID ,tarjeta_sanitaria.nombre,tarjeta_sanitaria.apellido1 \n"
+		String sql = "select  distinct citas.citaID ,tarjeta_sanitaria.nombre,tarjeta_sanitaria.apellido1 \n"
 				+ ",tarjeta_sanitaria.apellido2  , citas.fecha_hora , categorias.categoriaID, categorias.nombre\n"
 				+ "from citas join trabajadores t1 on t1.trabajadorID  = citas.medicoID\n"
 				+ "            join tarjeta_sanitaria on t1.trabajadorID =tarjeta_sanitaria.medicoID\n"
@@ -89,7 +89,7 @@ public class CitaDao {
 				citaMed.setApellido2(result.getString("apellido2"));
 				citaMed.setFecha_hora(result.getString("fecha_hora"));
 				citaMed.setCategoriaID(result.getInt("categoriaID"));
-				citaMed.setNombreCategoria(result.getString("nombre"));
+				citaMed.setNombreCategoria(result.getString("categorias.nombre"));
 
 				valueObject.añadir(citaMed);
 
@@ -105,9 +105,15 @@ public class CitaDao {
 		}
 	}
 
+	/******************************************************************************************/
+	/******************************************************************************************/
+	/******************************************************************************************/
+	/******************************************************************************************/
+
 	public CitasPaciente CitasPaciente() {
 		return new CitasPaciente();
 	}
+
 	public CitasPaciente createValueObjectPaciente() {
 		return new CitasPaciente();
 	}
@@ -173,4 +179,79 @@ public class CitaDao {
 		}
 	}
 
+	/******************************************************************************************/
+	/******************************************************************************************/
+	/******************************************************************************************/
+	/******************************************************************************************/
+	public CitasMedico getObjectAdministrador() {
+		Connection conn = mysqlConfig.connect();
+		CitasMedico valueObject = createValueObjectMedico();
+		loadCitaAdministrador(valueObject);
+		return valueObject;
+	}
+
+	public void loadCitaAdministrador(CitasMedico valueObject) {
+		Connection conn = mysqlConfig.connect();
+
+		String sql = "SELECT citas.citaID, pacientes.tarjetaSanitaria,  tarjeta_sanitaria.nombre AS nombrePaciente, \r\n"
+				+ "			tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, citas.fecha_hora AS fechaCita, categorias.categoriaID AS categoriaId,\r\n"
+				+ "			 categorias.nombre AS categoriaNombre\r\n"
+				+ "FROM predicciones \r\n"
+				+ "JOIN pacientes ON predicciones.pacienteID = pacientes.pacienteID\r\n"
+				+ "JOIN tarjeta_sanitaria ON pacientes.tarjetaSanitaria = tarjeta_sanitaria.tarjetaSanitaria\r\n"
+				+ "JOIN citas ON predicciones.prediccionID = citas.prediccionID\r\n"
+				+ "JOIN categorias ON predicciones.categoriaID = categorias.categoriaID;";
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+
+			multipleQueryCitasMedico(conn, stmt, valueObject);
+		} catch (NotFoundException | SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+
+		} finally {
+			if (stmt != null)
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					Logger l = Logger.getLogger(e.getMessage());
+					l.log(Level.SEVERE, "context", e);
+				}
+		}
+	}
+
+	protected void multipleQueryCitasAdministrador(Connection conn, PreparedStatement stmt, CitasMedico valueObject)
+			throws NotFoundException, SQLException {
+
+		ResultSet result = null;
+
+		try {
+			result = stmt.executeQuery();
+
+			while (result.next()) {
+				CitaMedico citaMed = new CitaMedico();
+				citaMed.setCitaID(result.getInt("citaID"));
+				citaMed.setNombre(result.getString("nombre"));
+				citaMed.setApellido1(result.getString("apellido1"));
+				citaMed.setApellido2(result.getString("apellido2"));
+				citaMed.setFecha_hora(result.getString("fecha_hora"));
+				citaMed.setCategoriaID(result.getInt("categoriaID"));
+				citaMed.setNombreCategoria(result.getString("categorias.nombre"));
+
+				valueObject.añadir(citaMed);
+
+			}
+			if (result == null) {
+				throw new NotFoundException("Enfermedad Object Not Found!");
+			}
+		} finally {
+			if (result != null)
+				result.close();
+			if (stmt != null)
+				stmt.close();
+		}
+	}
+	
 }

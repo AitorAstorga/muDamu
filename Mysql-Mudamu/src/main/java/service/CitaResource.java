@@ -63,4 +63,24 @@ public class CitaResource {
 			return res;
 		}
 	}
+	
+	@GET
+	@Path("citasAdministrador")
+	@Produces("application/xml")
+	public Response getCitasAdministradorXml() {
+		Response res;
+		CitasMedico citasMedico = new CitasMedico();
+		
+		CitaFacade f = new CitaFacade();
+		citasMedico = f.loadAdministrador();
+		if (citasMedico==null) {
+			res = Response.status(Response.Status.NOT_FOUND).build();
+			return res;
+			
+		} else {
+			res = Response.ok().entity(citasMedico).build();
+			System.out.println(res);
+			return res;
+		}
+	}
 }

@@ -18,4 +18,7 @@ public class CitaFacade {
 	public CitasPaciente loadPaciente(Integer pacienteID) {
 		return daoItem.getObjectPaciente(pacienteID);
 	}
+	public CitasMedico loadAdministrador() {
+		return daoItem.getObjectAdministrador();
+	}
 }
