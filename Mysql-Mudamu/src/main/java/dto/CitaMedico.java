@@ -7,8 +7,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
-@XmlType(propOrder = { "citaID", "nombre", "apellido1", "apellido2", "fecha_hora", "categoriaID",
-		"nombreCategoria"})
+@XmlType(propOrder = { "citaID", "tarjetaSanitaria", "nombre", "apellido1", "apellido2", "fecha_hora", "categoriaID",
+		"nombreCategoria" })
 public class CitaMedico implements Serializable {
 	private static final long serialVersionUID = 1671417246199538663L;
 
@@ -19,6 +19,7 @@ public class CitaMedico implements Serializable {
 	private String fecha_hora;
 	private Integer categoriaID;
 	private String nombreCategoria;
+	private String tarjetaSanitaria;
 
 	public CitaMedico() {
 		super();
@@ -29,8 +30,8 @@ public class CitaMedico implements Serializable {
 		this.citaID = citaID;
 	}
 
-	public CitaMedico(Integer citaID, String nombre, String apellido1, String apellido2, String fecha_hora,
-			Integer categoriaID, String nombreCategoria) {
+	public CitaMedico(Integer citaID, String tarjetaSanitaria, String nombre, String apellido1, String apellido2,
+			String fecha_hora, Integer categoriaID, String nombreCategoria) {
 		super();
 		this.citaID = citaID;
 		this.nombre = nombre;
@@ -39,8 +40,17 @@ public class CitaMedico implements Serializable {
 		this.fecha_hora = fecha_hora;
 		this.categoriaID = categoriaID;
 		this.nombreCategoria = nombreCategoria;
+		this.tarjetaSanitaria = tarjetaSanitaria;
 	}
-	
+
+	public String getTarjetaSanitaria() {
+		return tarjetaSanitaria;
+	}
+
+	public void setTarjetaSanitaria(String tarjetaSanitaria) {
+		this.tarjetaSanitaria = tarjetaSanitaria;
+	}
+
 	public Integer getCitaID() {
 		return citaID;
 	}
@@ -103,8 +113,8 @@ public class CitaMedico implements Serializable {
 
 	@Override
 	public String toString() {
-		return "citaID: " + citaID + " nombre: " + nombre + " apellido1: " + apellido1 + " apellido2: "
-				+ apellido2 + " fecha_hora: " + fecha_hora + " categoriaID: " + categoriaID + " nombreCategoria: "
+		return "citaID: " + citaID + "tarjetaSanitaria:" + tarjetaSanitaria +" nombre: " + nombre + " apellido1: " + apellido1 + " apellido2: " + apellido2
+				+ " fecha_hora: " + fecha_hora + " categoriaID: " + categoriaID + " nombreCategoria: "
 				+ nombreCategoria;
 	}
 
@@ -113,6 +123,7 @@ public class CitaMedico implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((citaID == null) ? 0 : citaID.hashCode());
+		result = prime * result + ((tarjetaSanitaria == null) ? 0 : tarjetaSanitaria.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((apellido1 == null) ? 0 : apellido1.hashCode());
 		result = prime * result + ((apellido2 == null) ? 0 : apellido2.hashCode());
@@ -130,7 +141,7 @@ public class CitaMedico implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		CitaMedico other = (CitaMedico) obj;
 		if (citaID == null) {
 			if (other.citaID != null)
@@ -138,43 +149,48 @@ public class CitaMedico implements Serializable {
 		} else if (!citaID.equals(other.citaID))
 			return false;
 		
+		if (tarjetaSanitaria == null) {
+			if (other.tarjetaSanitaria != null)
+				return false;
+		} else if (!tarjetaSanitaria.equals(other.tarjetaSanitaria))
+			return false;
+
 		if (nombre == null) {
 			if (other.nombre != null)
 				return false;
 		} else if (!nombre.equals(other.nombre))
 			return false;
-		
+
 		if (apellido1 == null) {
 			if (other.apellido1 != null)
 				return false;
 		} else if (!apellido1.equals(other.apellido1))
 			return false;
-		
+
 		if (apellido2 == null) {
 			if (other.apellido2 != null)
 				return false;
 		} else if (!apellido2.equals(other.apellido2))
 			return false;
-		
+
 		if (fecha_hora == null) {
 			if (other.fecha_hora != null)
 				return false;
 		} else if (!fecha_hora.equals(other.fecha_hora))
 			return false;
-		
+
 		if (categoriaID == null) {
 			if (other.categoriaID != null)
 				return false;
 		} else if (!categoriaID.equals(other.categoriaID))
 			return false;
-		
+
 		if (nombreCategoria == null) {
 			if (other.nombreCategoria != null)
 				return false;
 		} else if (!nombreCategoria.equals(other.nombreCategoria))
 			return false;
-		
+
 		return true;
 	}
-
 }

@@ -44,13 +44,15 @@ public class CitaDao {
 	public void loadCitaMedicos(CitasMedico valueObject, int citaID) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "select  distinct citas.citaID ,tarjeta_sanitaria.nombre,tarjeta_sanitaria.apellido1 \n"
-				+ ",tarjeta_sanitaria.apellido2  , citas.fecha_hora , categorias.categoriaID, categorias.nombre\n"
-				+ "from citas join trabajadores t1 on t1.trabajadorID  = citas.medicoID\n"
-				+ "            join tarjeta_sanitaria on t1.trabajadorID =tarjeta_sanitaria.medicoID\n"
-				+ "            join trabajadores t2 on t2.trabajadorID = tarjeta_sanitaria.medicoID\n"
-				+ "            join predicciones on predicciones.medicoID = t2.trabajadorID\n"
-				+ "            join categorias on predicciones.categoriaID = categorias.categoriaID WHERE citas.medicoID = ?";
+		String sql = "SELECT citas.citaID, pacientes.tarjetaSanitaria,  tarjeta_sanitaria.nombre AS nombrePaciente, \r\n"
+				+ "			tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, citas.fecha_hora AS fechaCita, categorias.categoriaID AS categoriaId,\r\n"
+				+ "			 categorias.nombre AS categoriaNombre\r\n"
+				+ "FROM predicciones \r\n"
+				+ "JOIN pacientes ON predicciones.pacienteID = pacientes.pacienteID\r\n"
+				+ "JOIN tarjeta_sanitaria ON pacientes.tarjetaSanitaria = tarjeta_sanitaria.tarjetaSanitaria\r\n"
+				+ "JOIN citas ON predicciones.prediccionID = citas.prediccionID\r\n"
+				+ "JOIN categorias ON predicciones.categoriaID = categorias.categoriaID\r\n"
+				+ "WHERE tarjeta_sanitaria.medicoID = ?";
 		PreparedStatement stmt = null;
 
 		try {
@@ -84,18 +86,19 @@ public class CitaDao {
 			while (result.next()) {
 				CitaMedico citaMed = new CitaMedico();
 				citaMed.setCitaID(result.getInt("citaID"));
-				citaMed.setNombre(result.getString("nombre"));
+				citaMed.setTarjetaSanitaria(result.getString("pacientes.tarjetaSanitaria"));
+				citaMed.setNombre(result.getString("nombrePaciente"));
 				citaMed.setApellido1(result.getString("apellido1"));
 				citaMed.setApellido2(result.getString("apellido2"));
-				citaMed.setFecha_hora(result.getString("fecha_hora"));
-				citaMed.setCategoriaID(result.getInt("categoriaID"));
-				citaMed.setNombreCategoria(result.getString("categorias.nombre"));
+				citaMed.setFecha_hora(result.getString("fechaCita"));
+				citaMed.setCategoriaID(result.getInt("categoriaId"));
+				citaMed.setNombreCategoria(result.getString("categoriaNombre"));
 
 				valueObject.añadir(citaMed);
 
 			}
 			if (result == null) {
-				throw new NotFoundException("Enfermedad Object Not Found!");
+				throw new NotFoundException("Cita Object Not Found!");
 			}
 		} finally {
 			if (result != null)
@@ -233,12 +236,13 @@ public class CitaDao {
 			while (result.next()) {
 				CitaMedico citaMed = new CitaMedico();
 				citaMed.setCitaID(result.getInt("citaID"));
-				citaMed.setNombre(result.getString("nombre"));
+				citaMed.setTarjetaSanitaria(result.getString("pacientes.tarjetaSanitaria"));
+				citaMed.setNombre(result.getString("nombrePaciente"));
 				citaMed.setApellido1(result.getString("apellido1"));
 				citaMed.setApellido2(result.getString("apellido2"));
-				citaMed.setFecha_hora(result.getString("fecha_hora"));
-				citaMed.setCategoriaID(result.getInt("categoriaID"));
-				citaMed.setNombreCategoria(result.getString("categorias.nombre"));
+				citaMed.setFecha_hora(result.getString("fechaCita"));
+				citaMed.setCategoriaID(result.getInt("categoriaId"));
+				citaMed.setNombreCategoria(result.getString("categoriaNombre"));
 
 				valueObject.añadir(citaMed);
 
