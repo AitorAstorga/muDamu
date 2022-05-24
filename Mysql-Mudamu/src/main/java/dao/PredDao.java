@@ -35,7 +35,7 @@ public class PredDao {
 	public void loadPred(Predicciones valueObject, int medicoID) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "SELECT predicciones.prediccionID, tarjeta_sanitaria.nombre, tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, predicciones.fecha_hora, categorias.categoriaID, categorias.nombre as nombreCategoria, predicciones.medicoID as medicoID  FROM mudamu.predicciones\n"
+		String sql = "SELECT predicciones.prediccionID, tarjeta_sanitaria.nombre, tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, predicciones.fecha_hora, categorias.categoriaID, categorias.nombre as nombreCategoria, predicciones.medicoID as medicoID , predicciones.citaSolicitada as citaSolicitada FROM mudamu.predicciones\n"
 				+ "	JOIN\n"
 				+ "pacientes ON predicciones.pacienteID = pacientes.pacienteID\n"
 				+ "	JOIN tarjeta_sanitaria ON pacientes.tarjetaSanitaria = tarjeta_sanitaria.tarjetaSanitaria\n"
@@ -83,6 +83,7 @@ public class PredDao {
 				prediccion.setFecha_hora(result.getString("fecha_hora"));
 				
 				prediccion.setMedicoID(result.getInt("medicoID"));
+				prediccion.setCitaSolicitada(result.getInt("citaSolicitada"));
 				
 				valueObject.añadir(prediccion);
 			} if (result==null) {

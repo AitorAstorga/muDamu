@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlType(propOrder = { "prediccionID", "nombre", "apellido1", "apellido2", "fecha_hora", "categoriaID",
-		"nombreCategoria", "medicoID" })
+		"nombreCategoria", "medicoID", "citaSolicitada" })
 public class Prediccion implements Serializable {
 	private static final long serialVersionUID = 1671417246199538663L;
 
@@ -21,6 +21,7 @@ public class Prediccion implements Serializable {
 	private Integer categoriaID;
 	private String nombreCategoria;
 	private Integer medicoID;
+	private Integer citaSolicitada;
 
 	public Prediccion() {
 		super();
@@ -32,7 +33,7 @@ public class Prediccion implements Serializable {
 	}
 
 	public Prediccion(Integer prediccionID, String nombre, String apellido1, String apellido2, String fecha_hora,
-			Integer categoriaID, String nombreCategoria, Integer medicoID) {
+			Integer categoriaID, String nombreCategoria, Integer medicoID, Integer citaSolicitada) {
 		super();
 		this.prediccionID = prediccionID;
 		this.nombre = nombre;
@@ -42,6 +43,7 @@ public class Prediccion implements Serializable {
 		this.categoriaID = categoriaID;
 		this.nombreCategoria = nombreCategoria;
 		this.medicoID = medicoID;
+		this.citaSolicitada = citaSolicitada;
 	}
 
 	public Integer getPrediccionID() {
@@ -107,7 +109,15 @@ public class Prediccion implements Serializable {
 	public Integer getMedicoID() {
 		return medicoID;
 	}
-	
+
+	public Integer getCitaSolicitada() {
+		return citaSolicitada;
+	}
+
+	public void setCitaSolicitada(Integer citaSolicitada) {
+		this.citaSolicitada = citaSolicitada;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
@@ -116,7 +126,7 @@ public class Prediccion implements Serializable {
 	public String toString() {
 		return "prediccionID: " + prediccionID + " nombre: " + nombre + " apellido1: " + apellido1 + " apellido2: "
 				+ apellido2 + " fecha_hora: " + fecha_hora + " categoriaID: " + categoriaID + " nombreCategoria: "
-				+ nombreCategoria + " medicoID: " + medicoID;
+				+ nombreCategoria + " medicoID: " + medicoID + " citaSolicitada: " + citaSolicitada;
 	}
 
 	@Override
@@ -131,6 +141,8 @@ public class Prediccion implements Serializable {
 		result = prime * result + ((categoriaID == null) ? 0 : categoriaID.hashCode());
 		result = prime * result + ((nombreCategoria == null) ? 0 : nombreCategoria.hashCode());
 		result = prime * result + ((medicoID == null) ? 0 : medicoID.hashCode());
+		result = prime * result + ((citaSolicitada == null) ? 0 : citaSolicitada.hashCode());
+
 		return result;
 	}
 
@@ -142,56 +154,62 @@ public class Prediccion implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		Prediccion other = (Prediccion) obj;
 		if (prediccionID == null) {
 			if (other.prediccionID != null)
 				return false;
 		} else if (!prediccionID.equals(other.prediccionID))
 			return false;
-		
+
 		if (nombre == null) {
 			if (other.nombre != null)
 				return false;
 		} else if (!nombre.equals(other.nombre))
 			return false;
-		
+
 		if (apellido1 == null) {
 			if (other.apellido1 != null)
 				return false;
 		} else if (!apellido1.equals(other.apellido1))
 			return false;
-		
+
 		if (apellido2 == null) {
 			if (other.apellido2 != null)
 				return false;
 		} else if (!apellido2.equals(other.apellido2))
 			return false;
-		
+
 		if (fecha_hora == null) {
 			if (other.fecha_hora != null)
 				return false;
 		} else if (!fecha_hora.equals(other.fecha_hora))
 			return false;
-		
+
 		if (categoriaID == null) {
 			if (other.categoriaID != null)
 				return false;
 		} else if (!categoriaID.equals(other.categoriaID))
 			return false;
-		
+
 		if (nombreCategoria == null) {
 			if (other.nombreCategoria != null)
 				return false;
 		} else if (!nombreCategoria.equals(other.nombreCategoria))
 			return false;
-		
+
 		if (medicoID == null) {
 			if (other.medicoID != null)
 				return false;
 		} else if (!medicoID.equals(other.medicoID))
 			return false;
 		
+		if (citaSolicitada == null) {
+			if (other.citaSolicitada != null)
+				return false;
+		} else if (!citaSolicitada.equals(other.citaSolicitada))
+			return false;
+
 		return true;
 	}
 
