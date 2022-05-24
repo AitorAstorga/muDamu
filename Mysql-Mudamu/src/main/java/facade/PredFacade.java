@@ -14,4 +14,8 @@ public class PredFacade {
 	public Predicciones load(Integer medicoID) {
 		return daoItem.getObject(medicoID);
 	}
+	
+	public void update(Integer prediccionID) {
+		daoItem.setObject(prediccionID);
+	}
 }

@@ -32,6 +32,12 @@ public class PredDao {
 		return valueObject;
 	}
 	
+	public void setObject(int prediccionID) {
+		Connection conn = mysqlConfig.connect();
+		Predicciones valueObject = createValueObject();
+		setPred(valueObject, prediccionID);
+	}
+	
 	public void loadPred(Predicciones valueObject, int medicoID) {
 		Connection conn = mysqlConfig.connect();
 
@@ -62,6 +68,32 @@ public class PredDao {
 		}
 	}
 	
+	public void setPred(Predicciones valueObject, int prediccionID) {
+		Connection conn = mysqlConfig.connect();
+
+		String sql = "update predicciones set citaSolicitada=1 where prediccionID = ?";
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, prediccionID);
+
+			int result = stmt.executeUpdate();		
+			
+		} catch (SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+
+		} finally {
+			if (stmt != null)
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					Logger l = Logger.getLogger(e.getMessage());
+					l.log(Level.SEVERE, "context", e);
+				}
+		}
+	}
 	
 	protected void multipleQueryPred(Connection conn, PreparedStatement stmt, Predicciones valueObject)
 			throws NotFoundException, SQLException {

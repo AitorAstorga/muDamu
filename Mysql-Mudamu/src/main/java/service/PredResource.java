@@ -41,4 +41,15 @@ public class PredResource {
 			return res;
 		}
 	}
+	
+	@GET
+	@Path("citaSolicitada")
+	@Produces("application/xml")
+	public void setPredXml(@QueryParam("prediccionID") String prediccionID) {
+		Response res;
+		Predicciones prediccion = new Predicciones();
+		
+		PredFacade f = new PredFacade();
+		f.update(Integer.parseInt(prediccionID));
+	}
 }
