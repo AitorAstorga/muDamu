@@ -15,7 +15,7 @@ public class PredFacade {
 		return daoItem.getObject(medicoID);
 	}
 	
-	public void update(Integer prediccionID) {
-		daoItem.setObject(prediccionID);
+	public void update(Integer prediccionID, Integer categoriaID) {
+		daoItem.setObject(prediccionID, categoriaID);
 	}
 }

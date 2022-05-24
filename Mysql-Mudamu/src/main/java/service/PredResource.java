@@ -22,34 +22,35 @@ public class PredResource {
 	 */
 	public PredResource() {
 	}
-	
+
 	@GET
 	@Path("predicciones")
 	@Produces("application/xml")
 	public Response getPredXml(@QueryParam("medicoID") String medicoID) {
 		Response res;
 		Predicciones prediccion = new Predicciones();
-		
+
 		PredFacade f = new PredFacade();
 		prediccion = f.load(Integer.parseInt(medicoID));
-		if (prediccion==null) {
+		if (prediccion == null) {
 			res = Response.status(Response.Status.NOT_FOUND).build();
 			return res;
-			
+
 		} else {
 			res = Response.ok().entity(prediccion).build();
 			return res;
 		}
 	}
-	
+
 	@GET
 	@Path("citaSolicitada")
 	@Produces("application/xml")
-	public void setPredXml(@QueryParam("prediccionID") String prediccionID) {
+	public void setPredXml(@QueryParam("prediccionID") String prediccionID,
+			@QueryParam("categoriaID") String categoriaID) {
 		Response res;
 		Predicciones prediccion = new Predicciones();
-		
+
 		PredFacade f = new PredFacade();
-		f.update(Integer.parseInt(prediccionID));
+		f.update(Integer.parseInt(prediccionID), Integer.parseInt(categoriaID));
 	}
 }

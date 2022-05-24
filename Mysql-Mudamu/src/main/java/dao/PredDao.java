@@ -32,10 +32,10 @@ public class PredDao {
 		return valueObject;
 	}
 	
-	public void setObject(int prediccionID) {
+	public void setObject(int prediccionID, int categoriaID) {
 		Connection conn = mysqlConfig.connect();
 		Predicciones valueObject = createValueObject();
-		setPred(valueObject, prediccionID);
+		setPred(valueObject, prediccionID, categoriaID);
 	}
 	
 	public void loadPred(Predicciones valueObject, int medicoID) {
@@ -68,15 +68,16 @@ public class PredDao {
 		}
 	}
 	
-	public void setPred(Predicciones valueObject, int prediccionID) {
+	public void setPred(Predicciones valueObject, int prediccionID, int categoriaID) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "update predicciones set citaSolicitada=1 where prediccionID = ?";
+		String sql = "update predicciones set citaSolicitada=1, categoriaID=? where prediccionID = ?";
 		PreparedStatement stmt = null;
 
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, prediccionID);
+			stmt.setInt(1, categoriaID);
+			stmt.setInt(2, prediccionID);
 
 			int result = stmt.executeUpdate();		
 			
