@@ -67,7 +67,7 @@ public class CitaResource {
 	@GET
 	@Path("citasAdministrador")
 	@Produces("application/xml")
-	public Response getCitasAdministradorXml() {
+	public Response getNewCitasAdministradorXml() {
 		Response res;
 		CitasMedico citasMedico = new CitasMedico();
 		
