@@ -21,4 +21,8 @@ public class CitaFacade {
 	public CitasMedico loadAdministrador() {
 		return daoItem.getObjectAdministrador();
 	}
+
+	public CitasMedico loadNewCitas(){
+		return daoItem.getObjectNewCitas();
+	}
 }
