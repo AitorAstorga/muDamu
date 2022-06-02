@@ -18,4 +18,8 @@ public class PredFacade {
 	public void update(Integer prediccionID, Integer categoriaID) {
 		daoItem.setObject(prediccionID, categoriaID);
 	}
+
+	public void updateCita(Integer prediccionID) {
+		daoItem.setObjectCita(prediccionID);
+	}
 }

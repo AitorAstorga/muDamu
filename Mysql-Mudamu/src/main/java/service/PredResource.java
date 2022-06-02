@@ -53,4 +53,15 @@ public class PredResource {
 		PredFacade f = new PredFacade();
 		f.update(Integer.parseInt(prediccionID), Integer.parseInt(categoriaID));
 	}
+
+	@GET
+	@Path("citaCreada")
+	@Produces("application/xml")
+	public void citaCreada(@QueryParam("prediccionID") String prediccionID) {
+		Response res;
+		Predicciones prediccion = new Predicciones();
+
+		PredFacade f = new PredFacade();
+		f.updateCita(Integer.parseInt(prediccionID));
+	}
 }

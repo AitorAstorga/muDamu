@@ -37,6 +37,12 @@ public class PredDao {
 		Predicciones valueObject = createValueObject();
 		setPred(valueObject, prediccionID, categoriaID);
 	}
+
+	public void setObjectCita(int prediccionID) {
+		Connection conn = mysqlConfig.connect();
+		Predicciones valueObject = createValueObject();
+		setPredPorCita(valueObject, prediccionID);
+	}
 	
 	public void loadPred(Predicciones valueObject, int medicoID) {
 		Connection conn = mysqlConfig.connect();
@@ -78,6 +84,33 @@ public class PredDao {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, categoriaID);
 			stmt.setInt(2, prediccionID);
+
+			int result = stmt.executeUpdate();		
+			
+		} catch (SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+
+		} finally {
+			if (stmt != null)
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					Logger l = Logger.getLogger(e.getMessage());
+					l.log(Level.SEVERE, "context", e);
+				}
+		}
+	}
+
+	public void setPredPorCita(Predicciones valueObject, int prediccionID) {
+		Connection conn = mysqlConfig.connect();
+
+		String sql = "update predicciones set citaSolicitada=0 where prediccionID = ?";
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, prediccionID);
 
 			int result = stmt.executeUpdate();		
 			
