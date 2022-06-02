@@ -8,6 +8,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import dto.CitaMedico;
 import dto.CitasMedico;
 import dto.CitasPaciente;
 import facade.CitaFacade;
@@ -102,5 +103,18 @@ public class CitaResource {
 			System.out.println(res);
 			return res;
 		}
+	}
+	
+	@GET
+	@Path("generateCita")
+	@Produces("application/xml")
+	public void generateCita(@QueryParam("prediccionID") String prediccionID,
+			@QueryParam("fecha_hora") String fecha_hora,
+			@QueryParam("pacienteID") String pacienteID) {
+		Response res;
+		
+		CitaFacade f = new CitaFacade();
+		f.insertCita(Integer.parseInt(prediccionID), fecha_hora,
+				Integer.parseInt(pacienteID));
 	}
 }

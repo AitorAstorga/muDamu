@@ -33,6 +33,10 @@ public class CitaDao {
 	public CitasMedico createValueObjectMedico() {
 		return new CitasMedico();
 	}
+	
+	public CitaMedico createValueObject() {
+		return new CitaMedico();
+	}
 
 	public CitasMedico getObjectMedico(int citaID) {
 		Connection conn = mysqlConfig.connect();
@@ -198,6 +202,44 @@ public class CitaDao {
 		CitasMedico valueObject = createValueObjectMedico();
 		loadNewCitas(valueObject);
 		return valueObject;
+	}
+	
+	public void insertNewCita(int prediccionID, String fecha_hora, int pacienteID) {
+		Connection conn = mysqlConfig.connect();
+		CitaMedico valueObject = createValueObject();
+		createNewCita(valueObject, prediccionID, fecha_hora, pacienteID);
+	}
+
+	private void createNewCita(CitaMedico valueObject, int prediccionID, 
+			String fecha_hora, int pacienteID) {
+		Connection conn = mysqlConfig.connect();
+
+		String sql = "INSERT INTO citas (prediccionID,fecha_hora,medicoID,pacienteID) VALUES (?,?,\r\n"
+				+ "    (SELECT medicoID FROM tarjeta_sanitaria JOIN pacientes ON tarjeta_sanitaria.tarjetaSanitaria = pacientes.tarjetaSanitaria\r\n"
+				+ "    WHERE pacientes.pacienteID = ?), ?);";
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, prediccionID);
+			stmt.setString(2, fecha_hora);
+			stmt.setInt(3, pacienteID);
+			stmt.setInt(4, pacienteID);
+
+			int result = stmt.executeUpdate();
+		} catch (NotFoundException | SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+
+		} finally {
+			if (stmt != null)
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					Logger l = Logger.getLogger(e.getMessage());
+					l.log(Level.SEVERE, "context", e);
+				}
+		}
 	}
 
 	public void loadNewCitas(CitasMedico valueObject) {

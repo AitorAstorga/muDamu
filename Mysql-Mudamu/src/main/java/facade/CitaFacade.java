@@ -1,6 +1,7 @@
 package facade;
 
 import dao.CitaDao;
+import dto.CitaMedico;
 import dto.CitasMedico;
 import dto.CitasPaciente;
 
@@ -24,5 +25,9 @@ public class CitaFacade {
 
 	public CitasMedico loadNewCitas(){
 		return daoItem.getObjectNewCitas();
+	}
+
+	public void insertCita(int prediccionID, String fecha_hora, int pacienteID) {
+		daoItem.insertNewCita(prediccionID, fecha_hora, pacienteID);
 	}
 }
