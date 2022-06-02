@@ -254,7 +254,7 @@ public class CitaDao {
 		try {
 			stmt = conn.prepareStatement(sql);
 
-			multipleQueryCitasMedico(conn, stmt, valueObject, true);
+			multipleQueryCitasAdministrador(conn, stmt, valueObject);
 		} catch (NotFoundException | SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
@@ -317,9 +317,9 @@ public class CitaDao {
 				citaMed.setNombre(result.getString("nombrePaciente"));
 				citaMed.setApellido1(result.getString("apellido1"));
 				citaMed.setApellido2(result.getString("apellido2"));
-				citaMed.setFecha_hora(result.getString("fechaCita"));
 				citaMed.setCategoriaID(result.getInt("categoriaId"));
 				citaMed.setNombreCategoria(result.getString("categoriaNombre"));
+				citaMed.setFecha_hora("");
 
 				valueObject.añadir(citaMed);
 
