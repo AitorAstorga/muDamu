@@ -312,7 +312,7 @@ public class CitaDao {
 
 			while (result.next()) {
 				CitaMedico citaMed = new CitaMedico();
-				citaMed.setCitaID(result.getInt("citaID"));
+				citaMed.setCitaID(-1);
 				citaMed.setTarjetaSanitaria(result.getString("pacientes.tarjetaSanitaria"));
 				citaMed.setNombre(result.getString("nombrePaciente"));
 				citaMed.setApellido1(result.getString("apellido1"));
