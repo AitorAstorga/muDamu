@@ -63,7 +63,7 @@ public class CitaDao {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, citaID);
 
-			multipleQueryCitasMedico(conn, stmt, valueObject);
+			multipleQueryCitasMedico(conn, stmt, valueObject, false);
 		} catch (NotFoundException | SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
@@ -79,7 +79,7 @@ public class CitaDao {
 		}
 	}
 
-	protected void multipleQueryCitasMedico(Connection conn, PreparedStatement stmt, CitasMedico valueObject)
+	protected void multipleQueryCitasMedico(Connection conn, PreparedStatement stmt, CitasMedico valueObject, boolean condicion)
 			throws NotFoundException, SQLException {
 
 		ResultSet result = null;
@@ -97,7 +97,9 @@ public class CitaDao {
 				citaMed.setFecha_hora(result.getString("fechaCita"));
 				citaMed.setCategoriaID(result.getInt("categoriaId"));
 				citaMed.setNombreCategoria(result.getString("categoriaNombre"));
-				citaMed.setPrediccionID(result.getInt("prediccionID"));
+				
+				if(condicion)citaMed.setPrediccionID(result.getInt("prediccionID"));
+				else citaMed.setPrediccionID(-1);
 
 				valueObject.añadir(citaMed);
 
@@ -252,7 +254,7 @@ public class CitaDao {
 		try {
 			stmt = conn.prepareStatement(sql);
 
-			multipleQueryCitasMedico(conn, stmt, valueObject);
+			multipleQueryCitasMedico(conn, stmt, valueObject, true);
 		} catch (NotFoundException | SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
@@ -284,7 +286,7 @@ public class CitaDao {
 		try {
 			stmt = conn.prepareStatement(sql);
 
-			multipleQueryCitasMedico(conn, stmt, valueObject);
+			multipleQueryCitasMedico(conn, stmt, valueObject, false);
 		} catch (NotFoundException | SQLException e) {
 			Logger l = Logger.getLogger(e.getMessage());
 			l.log(Level.SEVERE, "context", e);
