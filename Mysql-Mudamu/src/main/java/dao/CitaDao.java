@@ -320,6 +320,7 @@ public class CitaDao {
 				citaMed.setCategoriaID(result.getInt("categoriaId"));
 				citaMed.setNombreCategoria(result.getString("categoriaNombre"));
 				citaMed.setFecha_hora("");
+				citaMed.setPrediccionID(result.getInt("prediccionID"));
 
 				valueObject.añadir(citaMed);
 
