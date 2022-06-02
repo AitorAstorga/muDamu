@@ -97,6 +97,7 @@ public class CitaDao {
 				citaMed.setFecha_hora(result.getString("fechaCita"));
 				citaMed.setCategoriaID(result.getInt("categoriaId"));
 				citaMed.setNombreCategoria(result.getString("categoriaNombre"));
+				citaMed.setPrediccionID(result.getInt("prediccionID"));
 
 				valueObject.añadir(citaMed);
 
@@ -245,7 +246,7 @@ public class CitaDao {
 	public void loadNewCitas(CitasMedico valueObject) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "SELECT citas.citaID, pacientes.tarjetaSanitaria,  tarjeta_sanitaria.nombre AS nombrePaciente, tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, citas.fecha_hora AS fechaCita, categorias.categoriaID AS categoriaId, categorias.nombre AS categoriaNombre FROM predicciones JOIN pacientes ON predicciones.pacienteID = pacientes.pacienteID JOIN tarjeta_sanitaria ON pacientes.tarjetaSanitaria = tarjeta_sanitaria.tarjetaSanitaria JOIN citas ON predicciones.prediccionID = citas.prediccionID JOIN categorias ON predicciones.categoriaID = categorias.categoriaID where predicciones.citaSolicitada = 1;";
+		String sql = "SELECT citas.citaID, pacientes.tarjetaSanitaria,  tarjeta_sanitaria.nombre AS nombrePaciente, tarjeta_sanitaria.apellido1, tarjeta_sanitaria.apellido2, citas.fecha_hora AS fechaCita, categorias.categoriaID AS categoriaId, categorias.nombre AS categoriaNombre, predicciones.prediccionID FROM predicciones JOIN pacientes ON predicciones.pacienteID = pacientes.pacienteID JOIN tarjeta_sanitaria ON pacientes.tarjetaSanitaria = tarjeta_sanitaria.tarjetaSanitaria JOIN citas ON predicciones.prediccionID = citas.prediccionID JOIN categorias ON predicciones.categoriaID = categorias.categoriaID where predicciones.citaSolicitada = 1;";
 		PreparedStatement stmt = null;
 
 		try {

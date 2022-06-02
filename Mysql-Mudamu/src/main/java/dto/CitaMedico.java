@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
 @XmlType(propOrder = { "citaID", "tarjetaSanitaria", "nombre", "apellido1", "apellido2", "fecha_hora", "categoriaID",
-		"nombreCategoria" })
+		"nombreCategoria", "prediccionID" })
 public class CitaMedico implements Serializable {
 	private static final long serialVersionUID = 1671417246199538663L;
 
@@ -20,6 +20,7 @@ public class CitaMedico implements Serializable {
 	private Integer categoriaID;
 	private String nombreCategoria;
 	private String tarjetaSanitaria;
+	private Integer prediccionID;
 
 	public CitaMedico() {
 		super();
@@ -31,7 +32,7 @@ public class CitaMedico implements Serializable {
 	}
 
 	public CitaMedico(Integer citaID, String tarjetaSanitaria, String nombre, String apellido1, String apellido2,
-			String fecha_hora, Integer categoriaID, String nombreCategoria) {
+			String fecha_hora, Integer categoriaID, String nombreCategoria, Integer prediccionID) {
 		super();
 		this.citaID = citaID;
 		this.nombre = nombre;
@@ -41,6 +42,15 @@ public class CitaMedico implements Serializable {
 		this.categoriaID = categoriaID;
 		this.nombreCategoria = nombreCategoria;
 		this.tarjetaSanitaria = tarjetaSanitaria;
+		this.prediccionID = prediccionID;
+	}
+
+	public Integer getPrediccionID() {
+		return prediccionID;
+	}
+
+	public void setPrediccionID(Integer prediccionID) {
+		this.prediccionID = prediccionID;
 	}
 
 	public String getTarjetaSanitaria() {
@@ -113,9 +123,9 @@ public class CitaMedico implements Serializable {
 
 	@Override
 	public String toString() {
-		return "citaID: " + citaID + "tarjetaSanitaria:" + tarjetaSanitaria +" nombre: " + nombre + " apellido1: " + apellido1 + " apellido2: " + apellido2
-				+ " fecha_hora: " + fecha_hora + " categoriaID: " + categoriaID + " nombreCategoria: "
-				+ nombreCategoria;
+		return "citaID: " + citaID + "tarjetaSanitaria:" + tarjetaSanitaria + " nombre: " + nombre + " apellido1: "
+				+ apellido1 + " apellido2: " + apellido2 + " fecha_hora: " + fecha_hora + " categoriaID: " + categoriaID
+				+ " nombreCategoria: " + nombreCategoria + " prediccionID: " + prediccionID;
 	}
 
 	@Override
@@ -130,6 +140,7 @@ public class CitaMedico implements Serializable {
 		result = prime * result + ((fecha_hora == null) ? 0 : fecha_hora.hashCode());
 		result = prime * result + ((categoriaID == null) ? 0 : categoriaID.hashCode());
 		result = prime * result + ((nombreCategoria == null) ? 0 : nombreCategoria.hashCode());
+		result = prime * result + ((prediccionID == null) ? 0 : prediccionID.hashCode());
 		return result;
 	}
 
@@ -148,7 +159,7 @@ public class CitaMedico implements Serializable {
 				return false;
 		} else if (!citaID.equals(other.citaID))
 			return false;
-		
+
 		if (tarjetaSanitaria == null) {
 			if (other.tarjetaSanitaria != null)
 				return false;
@@ -189,6 +200,12 @@ public class CitaMedico implements Serializable {
 			if (other.nombreCategoria != null)
 				return false;
 		} else if (!nombreCategoria.equals(other.nombreCategoria))
+			return false;
+		
+		if (prediccionID == null) {
+			if (other.prediccionID != null)
+				return false;
+		} else if (!prediccionID.equals(other.prediccionID))
 			return false;
 
 		return true;
