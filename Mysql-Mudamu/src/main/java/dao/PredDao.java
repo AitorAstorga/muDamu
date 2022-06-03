@@ -105,7 +105,7 @@ public class PredDao {
 	public void setPredPorCita(Predicciones valueObject, int prediccionID) {
 		Connection conn = mysqlConfig.connect();
 
-		String sql = "update predicciones set citaSolicitada=0 where prediccionID = ?";
+		String sql = "update predicciones set citaSolicitada=-1 where prediccionID = ?";
 		PreparedStatement stmt = null;
 
 		try {
