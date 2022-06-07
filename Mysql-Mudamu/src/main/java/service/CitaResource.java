@@ -117,4 +117,14 @@ public class CitaResource {
 		f.insertCita(Integer.parseInt(prediccionID), fecha_hora,
 				Integer.parseInt(pacienteID));
 	}
+
+	@GET
+	@Path("delete")
+	@Produces("application/xml")
+	public void deleteCita(@QueryParam("citaID") String citaID) {
+		Response res;
+		
+		CitaFacade f = new CitaFacade();
+		f.delete(Integer.parseInt(citaID));
+	}
 }

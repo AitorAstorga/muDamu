@@ -30,4 +30,8 @@ public class CitaFacade {
 	public void insertCita(int prediccionID, String fecha_hora, int pacienteID) {
 		daoItem.insertNewCita(prediccionID, fecha_hora, pacienteID);
 	}
+
+	public void delete(int citaID) {
+		daoItem.deleteCita(citaID);
+	}
 }

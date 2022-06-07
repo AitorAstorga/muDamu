@@ -213,6 +213,38 @@ public class CitaDao {
 		createNewCita(valueObject, prediccionID, fecha_hora, pacienteID);
 	}
 
+	public void deleteCita(int citaID){
+		Connection conn = mysqlConfig.connect();
+		CitaMedico valueObject = createValueObject();
+		delete(valueObject, citaID);
+	}
+
+	private void delete(CitaMedico valueObject, int citaID) {
+		Connection conn = mysqlConfig.connect();
+
+		String sql = "DELETE FROM citas WHERE citaID = ?";
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, citaID);
+
+			int result = stmt.executeUpdate();
+		} catch (NotFoundException | SQLException e) {
+			Logger l = Logger.getLogger(e.getMessage());
+			l.log(Level.SEVERE, "context", e);
+
+		} finally {
+			if (stmt != null)
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					Logger l = Logger.getLogger(e.getMessage());
+					l.log(Level.SEVERE, "context", e);
+				}
+		}
+	}
+
 	private void createNewCita(CitaMedico valueObject, int prediccionID, 
 			String fecha_hora, int pacienteID) {
 		Connection conn = mysqlConfig.connect();
